@@ -49,7 +49,7 @@ describe("Pokemon routes", () => {
       }));
     it("respond any pokemons", () =>
       agent.get("/pokemons").then((res) => {
-        expect(res.body.length).to.be.equal(3);
+        expect(res.body.length).to.be.equal(12);
       }));
     it("respond for data to pokeapi", () =>
       agent.get("/pokemons").then((res) => {

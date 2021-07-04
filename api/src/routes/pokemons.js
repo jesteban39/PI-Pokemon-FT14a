@@ -2,19 +2,14 @@ const { Router } = require("express");
 const axios = require("axios");
 
 const router = Router();
-/*
-12 pokes de la api
-Imagen
-Nombre
-Tipos 
- */
+
 let URL_ID = "https://pokeapi.co/api/v2/pokemon/";
-let URL_IMG =
-  "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/";
 
 router.get("/", (req, res) => {
+  let { name } = req.query;
+  if (name) return res.redirect("/pokemons/" + "0?name=" + name);
   let pokemonsP = [];
-  for (let i = 1; i <= 3; i++) {
+  for (let i = 1; i <= 12; i++) {
     pokemonsP.push(
       axios.get(URL_ID + i).then((pokemon) => {
         return {
@@ -33,11 +28,15 @@ router.get("/", (req, res) => {
 });
 
 router.get("/:id", (req, res) => {
-  const id = parseInt(req.params.id);
+  let id = parseInt(req.params.id);
+  let { name } = req.query;
   if (!Number.isInteger(id))
     return res.status(404).send({ message: "id is not a interger" });
-
-  axios.get(URL_ID + id)
+  if (id === 0 && name && typeof name === "string") {
+    id = name.toLowerCase().trim().replace(" ", "-");
+  }
+  axios
+    .get(URL_ID + id)
     .then((pokemon) => {
       return res.json({
         id: pokemon.data.id,
@@ -56,20 +55,6 @@ router.get("/:id", (req, res) => {
     .catch((err) => {
       return res.status(201).send({});
     });
-  //return res.sendStatus(205);
 });
-
-/* 
- id
- imagen
- nombre
- tipos
-vida
-fuerza
-defensa
-velocidad
-Altura 
-peso
- */
 
 module.exports = router;
