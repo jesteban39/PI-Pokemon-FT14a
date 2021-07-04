@@ -17,18 +17,20 @@ describe("Pokemon routes", () => {
     img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
     types: ["grass", "poison"],
   };
-  const pokemon162 = {
-    id: 162,
-    neme: "furret",
-    life: 85,
-    force: 76,
-    defense: 64,
-    speed: 90,
-    height: 18,
-    weight: 325,
-    types: ["normal"],
-    img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/162.png",
-  };
+  const pokemon25 = {
+    "id": 25,
+    "neme": "pikachu",
+    "life": 35,
+    "force": 55,
+    "defense": 40,
+    "speed": 90,
+    "height": 4,
+    "weight": 60,
+    "types": [
+        "electric"
+    ],
+    "img": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png"
+};
   before(() =>
     conn.authenticate().catch((err) => {
       console.error("Unable to connect to the database:", err);
@@ -60,19 +62,34 @@ describe("Pokemon routes", () => {
       }));
   });
   describe("GET /pokemons/:id", () => {
+    it("should get 200", () => agent.get("/pokemons/1").expect(200));
     it("should get 404 if id is not number", () =>
       agent.get("/pokemons/id").expect(404));
-    it("should get 201 and a {} if is not pokemon for this id", () =>
+    it("should get 404 and a {message:} if is not pokemon for this id", () =>
       agent
         .get("/pokemons/0")
-        .expect(201)
+        .expect(404)
         .then((res) => {
-          expect(res.body).to.be.deep.equal({});
+          expect(res.body.massage).to.be.contain.string
         }));
-    it("should get 200", () => agent.get("/pokemons/1").expect(200));
     it("respond for a pokemon of pokeapi", () =>
-      agent.get("/pokemons/162").then((res) => {
-        expect(res.body).to.be.deep.equal(pokemon162);
+      agent.get("/pokemons/25").then((res) => {
+        expect(res.body).to.be.deep.equal(pokemon25);
+      }));
+  });
+
+  describe("GET /pokemons?name=", () => {
+    it("should get 200", () => agent.get("/pokemons?name=pikachu").expect(200));
+    it("should get 404 and a {message:} if is not pokemon for this name", () =>
+      agent
+        .get("/pokemons?name=picachu")
+        .expect(404)
+        .then((res) => {
+          expect(res.body.massage).to.be.contain.string
+        }));
+    it("respond for a pokemon of pokeapi", () =>
+      agent.get("/pokemons?name=pikachu").then((res) => {
+        expect(res.body).to.be.deep.equal(pokemon25);
       }));
   });
 });
