@@ -23,7 +23,7 @@ module.exports = (sequelize) => {
       speed: { type: INTEGER },
       height: { type: INTEGER },
       weight: { type: INTEGER },
-      urlArt: { type: STRING },
+      img: { type: STRING },
       // `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/&{id}.png`
     },
     { initialAutoIncrement: "3000" }
