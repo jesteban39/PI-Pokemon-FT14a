@@ -1,9 +1,15 @@
 const axios = require("axios");
 
-let URL_ID = "https://pokeapi.co/api/v2/pokemon/";
+const URL_ID = "https://pokeapi.co/api/v2/pokemon/";
 
-const searchPokemon = (idOrName) => {
-  return axios.get(URL_ID + idOrName).then((pokemon) => {
+/**
+ * search for a pokemon by entering its name or id
+ * @param {*} payload integer id or string name
+ * @returns Pomise for a pokemon
+ */
+
+const searchPokemon = (payload) => {
+  return axios.get(URL_ID + payload).then((pokemon) => {
     return {
       id: pokemon.data.id,
       neme: pokemon.data.name,
