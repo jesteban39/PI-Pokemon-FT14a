@@ -16,7 +16,7 @@ module.exports = (sequelize) => {
             return this.id + 3000;
         }
       },
-      name: { type: STRING, allowNull: false },
+      name: { type: STRING, unique: true, allowNull: false },
       life: { type: INTEGER },
       force: { type: INTEGER },
       defense: { type: INTEGER },
@@ -29,15 +29,3 @@ module.exports = (sequelize) => {
     { initialAutoIncrement: "3000" }
   );
 };
-/* 
-username: {
-  type: DataTypes.STRING,
-  get() {
-    const rawValue = this.getDataValue(username);
-    return rawValue ? rawValue.toUpperCase() : null;
-  }
-}
-const user = User.build({ username: 'SuperUser123' });
-console.log(user.username); // 'SUPERUSER123'
-console.log(user.getDataValue(username)); // 'SuperUser123'
- */

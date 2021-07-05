@@ -1,15 +1,18 @@
-require('dotenv').config();
-const { Sequelize } = require('sequelize');
-const fs = require('fs');
-const path = require('path');
-const {
-  DB_USER, DB_PASSWORD, DB_HOST,
-} = process.env;
+require("dotenv").config();
+const { Sequelize } = require("sequelize");
+const fs = require("fs");
+const path = require("path");
+const axios = require("axios");
 
-const sequelize = new Sequelize(`postgres://postgres:password@localhost/pokemon`, {
-  logging: false, // set to console.log to see the raw SQL queries
-  native: false, // lets Sequelize know we can use pg-native for ~30% more speed
-});
+const { DB_USER, DB_PASSWORD, DB_HOST } = process.env;
+const URL_TYPES = "https://pokeapi.co/api/v2/type/";
+const sequelize = new Sequelize(
+  `postgres://postgres:password@localhost/pokemon`,
+  {
+    logging: false, // set to console.log to see the raw SQL queries
+    native: false, // lets Sequelize know we can use pg-native for ~30% more speed
+  }
+);
 const basename = path.basename(__filename);
 
 const modelDefiners = [];
@@ -17,23 +20,31 @@ const modelDefiners = [];
 //console.log("path dir: ",path.join(__dirname, '/models'))
 //console.log("basename: ",basename)
 
-
 // Leemos todos los archivos de la carpeta Models, los requerimos y agregamos al arreglo modelDefiners
-fs.readdirSync(path.join(__dirname, '/models'))
-  .filter((file) => (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js'))
+fs.readdirSync(path.join(__dirname, "/models"))
+  .filter(
+    (file) =>
+      file.indexOf(".") !== 0 &&
+      file !== basename &&
+      file.slice(-3) === ".js"
+  )
   .forEach((file) => {
-    modelDefiners.push(require(path.join(__dirname, '/models', file)));
+    modelDefiners.push(
+      require(path.join(__dirname, "/models", file))
+    );
   });
 
 // Injectamos la conexion (sequelize) a todos los modelos
-modelDefiners.forEach(model => model(sequelize));
+modelDefiners.forEach((model) => model(sequelize));
 // Capitalizamos los nombres de los modelos ie: product => Product
 
 //console.log("sm: ", sequelize.models)
 
-
 let entries = Object.entries(sequelize.models);
-let capsEntries = entries.map((entry) => [entry[0][0].toUpperCase() + entry[0].slice(1), entry[1]]);
+let capsEntries = entries.map((entry) => [
+  entry[0][0].toUpperCase() + entry[0].slice(1),
+  entry[1],
+]);
 sequelize.models = Object.fromEntries(capsEntries);
 
 //console.log("sm2: ",sequelize.models)
@@ -54,12 +65,34 @@ Pokemon.afterCreate((poke) => {
   //console.log("after poke: ",poke)
 });
 
-//Pokemon.sync({ force: true })
+//Grade.sync({ force: true });
+
+//Grade.afterSync((res) => { return 
+ axios
+    .get(URL_TYPES)
+    .then((res) => {
+      let types = res.data.results;
+      return types.map((type) => {
+        let id = type.url.replace(URL_TYPES, "").replace(/\D/g, "");
+        return Grade.create({ id: parseInt(id), name: type.name });
+      });
+    })
+    .then((types) => {
+      return Promise.all(types);
+    })
+    .then(() => {
+      console.log("types were added");
+    })
+    .catch((err) => {
+      console.log("types not were added");
+      return err;
+    });
+//});
 
 Pokemon.belongsToMany(Grade, { through: "poke_types" });
 Grade.belongsToMany(Pokemon, { through: "poke_types" });
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
-  conn: sequelize,     // para importart la conexión { conn } = require('./db.js');
+  conn: sequelize, // para importart la conexión { conn } = require('./db.js');
 };

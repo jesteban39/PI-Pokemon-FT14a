@@ -12,7 +12,7 @@ const searchPokemon = (payload) => {
   return axios.get(URL_ID + payload).then((pokemon) => {
     return {
       id: pokemon.data.id,
-      neme: pokemon.data.name,
+      name: pokemon.data.name,
       life: pokemon.data.stats[0].base_stat,
       force: pokemon.data.stats[1].base_stat,
       defense: pokemon.data.stats[2].base_stat,

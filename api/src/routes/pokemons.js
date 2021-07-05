@@ -1,8 +1,9 @@
 const { Router } = require("express");
 const searchPokemon = require("../actions/searchPokemon.js");
+const { Pokemon } = require("../db.js");
 const router = Router();
 
-router.get("/", (req, res, next) => {
+router.get("/", (req, res) => {
   let { name } = req.query;
   if (name && typeof name === "string") {
     name = name.toLowerCase().trim().replace(" ", "-");
@@ -20,8 +21,8 @@ router.get("/", (req, res, next) => {
   for (let i = 1; i <= 12; i++) {
     pokemonsP.push(
       searchPokemon(i).then((pokemon) => {
-        const { id, neme, img, types } = pokemon;
-        return { id, neme, img, types };
+        const { id, name, img, types } = pokemon;
+        return { id, name, img, types };
       })
     );
   }
@@ -45,22 +46,44 @@ router.get("/:id", (req, res) => {
       });
     });
 });
-
+function numbers(str) {
+  return parseInt(str.replace(/[^0-9]/g, ""));
+  //name.trim().toLowerCase().replace(/\s+/g, "-").replace(/[^a-z\-]/g, "").replace(/\-+/g, "-");
+}
 router.post("/", (req, res) => {
-  let {
-    neme,
-    life,
-    force,
-    defense,
-    speed,
-    height,
-    weight,
-    types,
-    img,
-  } = req.body;
+  let { name } = req.body;
+  if (!name || typeof name !== "string")
+    return res.status(404).json({ message: "name is not valid" });
+  name = name
+    .toLowerCase()
+    .replace(/[^a-z]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (name.length < 3)
+    return res.status(404).json({ message: "name is not valid" });
 
-  
-
+  return searchPokemon(name)
+    .then(
+      () => {
+        throw Error("existe");
+      },
+      () => {
+        return Pokemon.create({ ...req.body, name }).then(
+          (pokemon) => {
+            //console.log("create: ", pokemon.dataValues);
+            return res.json({
+              message: "pokemon create successfully",
+            });
+          }
+        );
+      }
+    )
+    .catch((err) => {
+      //console.log("err: ");
+      return res
+        .Status(404)
+        .json({ message: "pokemos was not created" });
+    });
 });
 
 module.exports = router;
