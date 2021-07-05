@@ -1,5 +1,6 @@
 require("dotenv").config();
 const { Sequelize } = require("sequelize");
+const searchPokemon = require("./actions/searchPokemon.js");
 const fs = require("fs");
 const path = require("path");
 const axios = require("axios");
@@ -56,38 +57,62 @@ const { Pokemon, Grade } = sequelize.models;
 // Aca vendrian las relaciones
 // Product.hasMany(Reviews);
 
-Pokemon.beforeCreate((poke) => {
-  //poke.id = 3000;
-  //console.log("before poke: ",poke)
-});
-Pokemon.afterCreate((poke) => {
-  //poke.dataValues.id += 3000;
-  //console.log("after poke: ",poke)
+Pokemon.beforeCreate((pokemon) => {
+  let name = pokemon.name
+    .toLowerCase()
+    .replace(/[^a-z\s\-]/g, "") // elinina todo caracter que no sea alfabetico " " o "-"
+    .replace(/\-+/g, " ")
+    .trim()
+    .replace(/\s+/g, "-");
+
+  if (name.length < 3) throw Error("name is not valid");
+
+  return searchPokemon(name).then(
+    () => {
+      throw new Error("already exists in pokeapi");
+    },
+    () => {
+      pokemon.name = name;
+      const toNum = (str) => {
+        str = new String(str)
+        let num = parseInt(str.replace(/[^0-9]/g, ""));
+        if (!num || num <= 0 || num > 1000) num = 1;
+        return num;
+      };
+      const stats = ["life","force","defense","speed","height","weight"];
+      stats.map(stat =>{
+        //console.log(pokemon[stat]);
+        pokemon[stat] = toNum(pokemon[stat]);
+      })   
+      //console.log("befor poke: ", pokemon);
+      return true;
+    }
+  );
 });
 
 //Grade.sync({ force: true });
+//Pokemon.sync({ force: true });
 
-//Grade.afterSync((res) => { return 
- axios
-    .get(URL_TYPES)
-    .then((res) => {
-      let types = res.data.results;
-      return types.map((type) => {
-        let id = type.url.replace(URL_TYPES, "").replace(/\D/g, "");
-        return Grade.create({ id: parseInt(id), name: type.name });
-      });
-    })
-    .then((types) => {
-      return Promise.all(types);
-    })
-    .then(() => {
-      console.log("types were added");
-    })
-    .catch((err) => {
-      console.log("types not were added");
-      return err;
+//Grade.afterSync((res) => { return});
+axios
+  .get(URL_TYPES)
+  .then((res) => {
+    let types = res.data.results;
+    return types.map((type) => {
+      let id = type.url.replace(URL_TYPES, "").replace(/\D/g, "");
+      return Grade.create({ id: parseInt(id), name: type.name });
     });
-//});
+  })
+  .then((types) => {
+    return Promise.all(types);
+  })
+  .then(() => {
+    console.log("types were added");
+  })
+  .catch((err) => {
+    console.log("types not were added");
+    return err;
+  });
 
 Pokemon.belongsToMany(Grade, { through: "poke_types" });
 Grade.belongsToMany(Pokemon, { through: "poke_types" });

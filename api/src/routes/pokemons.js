@@ -46,43 +46,27 @@ router.get("/:id", (req, res) => {
       });
     });
 });
-function numbers(str) {
-  return parseInt(str.replace(/[^0-9]/g, ""));
-  //name.trim().toLowerCase().replace(/\s+/g, "-").replace(/[^a-z\-]/g, "").replace(/\-+/g, "-");
-}
 router.post("/", (req, res) => {
   let { name } = req.body;
   if (!name || typeof name !== "string")
-    return res.status(404).json({ message: "name is not valid" });
+    return res.status(404).json({ error: "name is not valid" });
   name = name
     .toLowerCase()
-    .replace(/[^a-z]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+    .replace(/[^a-z\s\-]/g, "") // elinina todo caracter que no sea alfabetico " " o "-"
+    .replace(/\-+/g, " ")
+    .trim()
+    .replace(/\s+/g, "-");
   if (name.length < 3)
-    return res.status(404).json({ message: "name is not valid" });
+    return res.status(404).json({ error: "name is not valid" });
 
-  return searchPokemon(name)
-    .then(
-      () => {
-        throw Error("existe");
-      },
-      () => {
-        return Pokemon.create({ ...req.body, name }).then(
-          (pokemon) => {
-            //console.log("create: ", pokemon.dataValues);
-            return res.json({
-              message: "pokemon create successfully",
-            });
-          }
-        );
-      }
-    )
-    .catch((err) => {
-      //console.log("err: ");
-      return res
-        .Status(404)
-        .json({ message: "pokemos was not created" });
+  return Pokemon.create({ ...req.body, name })
+    .then((pokemon) => {
+      return res.json({
+        message: "pokemon create successfully",
+      });
+    })
+    .catch((error) => {
+      return res.status(404).json({ error });
     });
 });
 
