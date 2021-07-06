@@ -1,12 +1,13 @@
 const { Router } = require("express");
 const searchPokemon = require("../actions/searchPokemon.js");
-const { Pokemon } = require("../db.js");
+const addPokemon = require("../actions/addPokemon.js");
+const { Pokemon, Grade } = require("../db.js");
 const router = Router();
 
 router.get("/", (req, res) => {
   let { name } = req.query;
   if (name && typeof name === "string") {
-    name = name.toLowerCase().trim().replace(" ", "-");
+    name = name.toLowerCase().trim().replace(/\s+/g, "-");
     return searchPokemon(name)
       .then((pokemon) => {
         return res.json(pokemon);
@@ -36,7 +37,7 @@ router.get("/:id", (req, res) => {
   if (!Number.isInteger(id))
     return res.status(404).send({ message: "id is not a interger" });
 
-  searchPokemon(id)
+  return searchPokemon(id)
     .then((pokemon) => {
       return res.json(pokemon);
     })
@@ -58,16 +59,20 @@ router.post("/", (req, res) => {
     .replace(/\s+/g, "-");
   if (name.length < 3)
     return res.status(404).json({ error: "name is not valid" });
-
-  return Pokemon.create({ ...req.body, name })
-    .then((pokemon) => {
+  req.body.name = name;
+  return addPokemon(req.body)
+    .then((newPokemon) => {
+      console.log("newpoke: ",newPokemon);
       return res.json({
-        message: "pokemon create successfully",
+        id: newPokemon.id + 3000,
+        name: newPokemon.name,
+        img: newPokemon.img
       });
     })
     .catch((error) => {
-      return res.status(404).json({ error });
+      return res.status(404).json({pokemon: "not create" ,error });
     });
+  
 });
 
 module.exports = router;

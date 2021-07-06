@@ -12,9 +12,6 @@ module.exports = (sequelize) => {
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
-        get: ()=>{
-            return this.id + 3000;
-        }
       },
       name: { type: STRING, unique: true, allowNull: false },
       life: { type: INTEGER },

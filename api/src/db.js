@@ -3,10 +3,13 @@ const { Sequelize } = require("sequelize");
 const searchPokemon = require("./actions/searchPokemon.js");
 const fs = require("fs");
 const path = require("path");
+
 const axios = require("axios");
+const URL_TYPES = "https://pokeapi.co/api/v2/type/";
 
 const { DB_USER, DB_PASSWORD, DB_HOST } = process.env;
-const URL_TYPES = "https://pokeapi.co/api/v2/type/";
+const modelDefiners = [];
+const basename = path.basename(__filename);
 const sequelize = new Sequelize(
   `postgres://postgres:password@localhost/pokemon`,
   {
@@ -14,12 +17,6 @@ const sequelize = new Sequelize(
     native: false, // lets Sequelize know we can use pg-native for ~30% more speed
   }
 );
-const basename = path.basename(__filename);
-
-const modelDefiners = [];
-
-//console.log("path dir: ",path.join(__dirname, '/models'))
-//console.log("basename: ",basename)
 
 // Leemos todos los archivos de la carpeta Models, los requerimos y agregamos al arreglo modelDefiners
 fs.readdirSync(path.join(__dirname, "/models"))
@@ -39,16 +36,12 @@ fs.readdirSync(path.join(__dirname, "/models"))
 modelDefiners.forEach((model) => model(sequelize));
 // Capitalizamos los nombres de los modelos ie: product => Product
 
-//console.log("sm: ", sequelize.models)
-
 let entries = Object.entries(sequelize.models);
 let capsEntries = entries.map((entry) => [
   entry[0][0].toUpperCase() + entry[0].slice(1),
   entry[1],
 ]);
 sequelize.models = Object.fromEntries(capsEntries);
-
-//console.log("sm2: ",sequelize.models)
 
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
@@ -67,39 +60,32 @@ Pokemon.beforeCreate((pokemon) => {
 
   if (name.length < 3) throw Error("name is not valid");
 
-  return searchPokemon(name).then(
-    () => {
-      throw new Error("already exists in pokeapi");
-    },
-    () => {
-      pokemon.name = name;
+  pokemon.name = name;
       const toNum = (str) => {
         str = new String(str)
         let num = parseInt(str.replace(/[^0-9]/g, ""));
-        if (!num || num <= 0 || num > 1000) num = 1;
+        if (!num || num <= 0 || num >= 1000) num = 1;
         return num;
       };
       const stats = ["life","force","defense","speed","height","weight"];
       stats.map(stat =>{
-        //console.log(pokemon[stat]);
         pokemon[stat] = toNum(pokemon[stat]);
-      })   
-      //console.log("befor poke: ", pokemon);
-      return true;
-    }
-  );
+      })
+
+  
 });
 
 //Grade.sync({ force: true });
+//poke_types.sync({ force: true });
 //Pokemon.sync({ force: true });
-
 //Grade.afterSync((res) => { return});
+
 axios
   .get(URL_TYPES)
   .then((res) => {
     let types = res.data.results;
     return types.map((type) => {
-      let id = type.url.replace(URL_TYPES, "").replace(/\D/g, "");
+      let id = type.url.replace(/v2|\D/g,"");
       return Grade.create({ id: parseInt(id), name: type.name });
     });
   })

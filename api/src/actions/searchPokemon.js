@@ -19,7 +19,12 @@ const searchPokemon = (payload) => {
       speed: pokemon.data.stats[5].base_stat,
       height: pokemon.data.height,
       weight: pokemon.data.weight,
-      types: pokemon.data.types.map((type) => type.type.name),
+      types: pokemon.data.types.map((type) => {
+        return {
+          id: type.type.url.replace(/v2|\D/g,""),
+          name: type.type.name
+        }
+      }),
       img: pokemon.data.sprites.other["official-artwork"]
         .front_default, //URL_IMG + i + ".png",
     };
