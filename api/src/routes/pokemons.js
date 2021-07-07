@@ -1,23 +1,38 @@
 const { Router } = require("express");
-const searchPokemon = require("../actions/searchPokemon.js");
-const addPokemon = require("../actions/addPokemon.js");
-const { Pokemon, Grade } = require("../db.js");
+const {
+  searchPokemon,
+  addPokemon,
+  verifyName,
+} = require("../actions");
 const router = Router();
 
 router.get("/", (req, res) => {
   let { name } = req.query;
-  if (name && typeof name === "string") {
-    name = name.toLowerCase().trim().replace(/\s+/g, "-");
+  if (name) {
+    name = verifyName(name);
+    console.log("id-> ", name);
+
+    if (!name)
+      return res.status(404).json({
+        message: "name in not valid",
+        data: {},
+      });
     return searchPokemon(name)
       .then((pokemon) => {
-        return res.json(pokemon);
+        return res.json({
+          message: "successful search",
+          data: pokemon,
+        });
       })
-      .catch((err) => {
-        return res.status(404).send({
+      .catch((error) => {
+        console.log(error);
+        return res.status(404).json({
           message: `No matches found for ${name}`,
+          data: {},
         });
       });
   }
+
   let pokemonsP = [];
   for (let i = 1; i <= 12; i++) {
     pokemonsP.push(
@@ -28,51 +43,65 @@ router.get("/", (req, res) => {
     );
   }
   Promise.all(pokemonsP).then((pokemons) => {
-    return res.json(pokemons);
+    return res.json({
+      message: "successful search",
+      data: pokemons,
+    });
   });
 });
 
 router.get("/:id", (req, res) => {
-  let id = parseInt(req.params.id);
-  if (!Number.isInteger(id))
-    return res.status(404).send({ message: "id is not a interger" });
+  let { id } = req.params;
+  id = parseInt(id.replace(/\D/g, ""));
+  if (!id)
+    return res.status(404).json({
+      message: "id should be a number",
+      data: {},
+    });
 
   return searchPokemon(id)
     .then((pokemon) => {
-      return res.json(pokemon);
-    })
-    .catch((err) => {
-      return res.status(404).send({
-        message: `No matches found for ${id}`,
-      });
-    });
-});
-router.post("/", (req, res) => {
-  let { name } = req.body;
-  if (!name || typeof name !== "string")
-    return res.status(404).json({ error: "name is not valid" });
-  name = name
-    .toLowerCase()
-    .replace(/[^a-z\s\-]/g, "") // elinina todo caracter que no sea alfabetico " " o "-"
-    .replace(/\-+/g, " ")
-    .trim()
-    .replace(/\s+/g, "-");
-  if (name.length < 3)
-    return res.status(404).json({ error: "name is not valid" });
-  req.body.name = name;
-  return addPokemon(req.body)
-    .then((newPokemon) => {
-      console.log("newpoke: ",newPokemon);
       return res.json({
-        id: newPokemon.id + 3000,
-        name: newPokemon.name,
-        img: newPokemon.img
+        message: "successful search",
+        data: pokemon,
       });
     })
     .catch((error) => {
-      return res.status(404).json({pokemon: "not create" ,error });
+      console.log(error);
+      return res.status(404).json({
+        message: `No matches found for ${id}`,
+        data: {},
+      });
     });
-  
+});
+
+router.post("/", (req, res) => {
+  let { name } = req.body;
+  name = verifyName(name);
+  if (!name)
+    return res.status(404).json({
+      message: "name is not valid",
+      data: {},
+    });
+  req.body.name = name;
+  console.log("pre addPokemon");
+  return addPokemon(req.body)
+    .then((newPokemon) => {
+      return res.json({
+        message: "successful add",
+        data: {
+          id: newPokemon.id + 3000,
+          name: newPokemon.name,
+        }
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+      return res.status(500).json({
+        message: "uuuups!!!",
+        data: {},
+      });
+    });
 });
 
 module.exports = router;

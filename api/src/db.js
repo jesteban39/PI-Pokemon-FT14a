@@ -1,11 +1,9 @@
 require("dotenv").config();
 const { Sequelize } = require("sequelize");
-const searchPokemon = require("./actions/searchPokemon.js");
 const fs = require("fs");
 const path = require("path");
-
-const axios = require("axios");
-const URL_TYPES = "https://pokeapi.co/api/v2/type/";
+const verifyName = require("./actions/verifyName.js");
+const  toNum  = require("./actions/toNum.js");
 
 const { DB_USER, DB_PASSWORD, DB_HOST } = process.env;
 const modelDefiners = [];
@@ -51,57 +49,29 @@ const { Pokemon, Grade } = sequelize.models;
 // Product.hasMany(Reviews);
 
 Pokemon.beforeCreate((pokemon) => {
-  let name = pokemon.name
-    .toLowerCase()
-    .replace(/[^a-z\s\-]/g, "") // elinina todo caracter que no sea alfabetico " " o "-"
-    .replace(/\-+/g, " ")
-    .trim()
-    .replace(/\s+/g, "-");
+  pokemon.name = verifyName(pokemon.name);
+  if (!pokemon.name) throw Error("name is not valid");
 
-  if (name.length < 3) throw Error("name is not valid");
-
-  pokemon.name = name;
-      const toNum = (str) => {
-        str = new String(str)
-        let num = parseInt(str.replace(/[^0-9]/g, ""));
-        if (!num || num <= 0 || num >= 1000) num = 1;
-        return num;
-      };
-      const stats = ["life","force","defense","speed","height","weight"];
-      stats.map(stat =>{
-        pokemon[stat] = toNum(pokemon[stat]);
-      })
-
-  
+  const stats = [
+    "life",
+    "force",
+    "defense",
+    "speed",
+    "height",
+    "weight",
+  ];
+  stats.map((stat) => {
+    pokemon[stat] = toNum(pokemon[stat]);
+  });
 });
 
 //Grade.sync({ force: true });
-//poke_types.sync({ force: true });
+//types.sync({ force: true });
 //Pokemon.sync({ force: true });
 //Grade.afterSync((res) => { return});
 
-axios
-  .get(URL_TYPES)
-  .then((res) => {
-    let types = res.data.results;
-    return types.map((type) => {
-      let id = type.url.replace(/v2|\D/g,"");
-      return Grade.create({ id: parseInt(id), name: type.name });
-    });
-  })
-  .then((types) => {
-    return Promise.all(types);
-  })
-  .then(() => {
-    console.log("types were added");
-  })
-  .catch((err) => {
-    console.log("types not were added");
-    return err;
-  });
-
-Pokemon.belongsToMany(Grade, { through: "poke_types" });
-Grade.belongsToMany(Pokemon, { through: "poke_types" });
+Pokemon.belongsToMany(Grade, { through: "types" });
+Grade.belongsToMany(Pokemon, { through: "types" });
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');

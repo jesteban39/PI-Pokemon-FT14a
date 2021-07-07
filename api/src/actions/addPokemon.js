@@ -1,8 +1,7 @@
 const searchPokemon = require("./searchPokemon.js");
 const { Pokemon, Grade } = require("../db.js");
 
-
-function addPokemon(pokemon) {  
+module.exports = function addPokemon(pokemon) {  
   let types = pokemon.types;
   return searchPokemon(pokemon.name).then(
     () => {throw Error(pokemon.name + " already exists")},
@@ -22,9 +21,7 @@ function addPokemon(pokemon) {
     })
     return Promise.all([newPokemon,newPokemon.setGrades(types)]) 
   })
-  .then((data) => {
-    return data[0];
+  .then((newPokemon) => {
+    return newPokemon[0];
   })
 }
-
-module.exports = addPokemon;
