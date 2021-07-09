@@ -1,63 +1,97 @@
 import { useState } from "react";
 
+const STAT_NAMES = ["life", "force", "defense", "speed"]
+
 export default function AddPokemon() {
   const [name, setName] = useState("");
-  const [height, setHeight] = useState();
-  const [weight, setWeight] = useState();
-  const [image, setImage] = useState();
+  const [height, setHeight] = useState("");
+  const [weight, setWeight] = useState("");
+  const [image, setImage] = useState("");
+  const [types, setTypes] = useState([]);
+  const [stats, setStats] = useState({});
+
+  const grades = ["rock", "normal", "undefine"];
 
   function handleName(event) {
-    let name = event.target.value
-      .toLowerCase()
-      .replace(/[^a-z\s]/gi, "");
+    const name = event.target.value.replace(/[^a-z\s]/gi, "");
     setName(name);
   }
   function handleHeight(event) {
-    let height = event.target.value;
-    setHeight(height < 0 || height);
+    const { value } = event.target;
+    setHeight(value);
   }
   function handleWeight(event) {
-    let weight = event.target.value;
-    setWeight(weight < 0 || weight);
+    const { value } = event.target;
+    setWeight(value);
   }
   function handleImage(event) {
-    setImage(event.target.value);
+    const { value } = event.target;
+    setImage(value);
   }
+  function handleTypes(event) {
+    const { name, checked } = event.target;
+    console.log("check: ", checked);
+    if (checked) {
+      setTypes((state) => [...state, name]);
+    } else {
+      setTypes((state) => state.filter((type) => type !== name));
+    }
+  }
+
+  function handleStats(event) {
+    const { name, value } = event.target;
+    setStats((state) => {
+      state[name] = value;
+      return {...state};
+    });
+  }
+
   return (
     <form>
       <h3>Add a new Pokemon</h3>
       <br />
-      <label>Name:</label>
-      <input autocomplete="name" value={name} onChange={handleName} />
+      <label>
+        Name :
+        <input value={name} onChange={handleName} />
+      </label>
       <br />
-      <label>Height:</label>
-      <input type="number" value={height} onChange={handleHeight} />
+      <label>
+        Height :
+        <input type="number" value={height} onChange={handleHeight} />
+      </label>
       <br />
-      <label>Weight:</label>
-      <input type="number" value={weight} onChange={handleWeight} />
+      <label>
+        Weight :
+        <input type="number" value={weight} onChange={handleWeight} />
+      </label>
       <br />
-      <label>Image URL :</label>
-      <input type="url" value={image} onChange={handleImage} />
+      <label>
+        Image :
+        <input type="url" value={image} onChange={handleImage} />
+      </label>
+      <br />
+      <label>{types}</label>
+      <br />
+      {grades.map((type, idx) => (
+        <label key={idx}>
+          {type}
+          <input name={type} type="checkbox" onChange={handleTypes} />
+        </label>
+      ))}
+      <br />
+      {STAT_NAMES.map((stat, idx) => (
+        <label key={idx}>
+          {stat}
+          <input
+            name={stat}
+            type="number"
+            value={stats[stat] || ""}
+            onChange={handleStats}
+          />
+        </label>
+      ))}
       <br />
       <input type="submit" value="Add" disabled={false} />
-      <br />
-      {/*() =>
-        items.map((label) => (
-          <label>
-            <input
-              type="checkbox"
-              checked={label}
-              onChange={this.toggleCheckbox}
-            />
-            {label}
-            { 
-                  <Checkbox
-                    label={label}
-                    handleCheckboxChange={this.toggleCheckbox}
-                    key={label}
-                  /> }
-          </label>
-        ))*/}
     </form>
   );
 }

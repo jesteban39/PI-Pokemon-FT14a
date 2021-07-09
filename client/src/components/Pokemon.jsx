@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 export default function Pokemon() {
   let pokemon = {
-    id: 30003,
+    id: 3003,
     name: "poke-pru",
     height: 4,
     weight: 60,
