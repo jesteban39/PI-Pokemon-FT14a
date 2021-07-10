@@ -1,23 +1,14 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import  {fillAll}  from "../actions";
 import { Link } from "react-router-dom";
 
 import Select from "./Select";
 
 const ORIGIN_NAMES = ["all", "favorite", "existing", "creations"];
-const SORT_NAMES = ["number", "name", "force", "hp"];
+const SORT_NAMES = ["number", "name", "force", "life"];
 const TYPE_NAMES = ["all", "rock", "normal", "undefine"];
-
-let pokemons = [
-  {
-    id: 30003,
-    name: "poke-pru",
-    img: "https://assets.pokemon.com/assets/cms2/img/pokedex/full/005.png",
-    types: [
-      { id: 9, name: "electric" },
-      { id: 13, name: "rock" },
-    ],
-  },
-];
 
 export default function Home() {
   const [name, setName] = useState("");
@@ -25,6 +16,9 @@ export default function Home() {
   const [type, setType] = useState("all");
   const [Sort, setSort] = useState("descent");
   const [SortBy, setSortBy] = useState("number");
+
+  const dispatch = useDispatch();
+  const pokemons = useSelector((state) => state.pokemons);
 
   function handleName(event) {
     const { value } = event.target;
@@ -47,9 +41,11 @@ export default function Home() {
     setSortBy(value);
   }
   function handleSearch(event) {
+    event.preventDefault();
     const { value } = event.target;
-    setSort(value);
+    setSort(value);    
   }
+  //console.log("data: ", pokemons);
 
   return (
     <div className="home">
@@ -97,18 +93,17 @@ export default function Home() {
         </Link>
         <br />
 
-        {pokemons.map((pokemon) => (
+        {pokemons.map((pokemon,idx) => (
           <Link key={pokemon.id} to={`/pokemon/:${pokemon.id}`}>
             <label>{pokemon.name}</label>
-            <img src={pokemon.img} alt="img" />
+            <img width="120" height="160" src={pokemon.img} alt="img" />
             <div>
               {pokemon.types.map((type) => (
-                <label key={type.id}>{`  ${type.name}  `}</label>
+                <label key={type}>{`  ${type}  `}</label>
               ))}
             </div>
           </Link>
         ))}
-
       </div>
     </div>
   );

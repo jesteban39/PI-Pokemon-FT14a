@@ -1,9 +1,15 @@
-import {
-  GET_POKEMONS
-} from "../actions";
+import { FILL_ALL, RESET, ADD_PAGE } from "../actions";
 
 const initialState = {
-  pokemons: [],
+  pokemonDetail: {},
+  pokemons: [
+    {
+      id: 0,
+      name: "",
+      img: "",
+      types: [],
+    },
+  ],
 };
 
 /**
@@ -15,8 +21,15 @@ const initialState = {
 
 export default function rootReducer(state = initialState, action) {
   switch (action.type) {
-    case GET_POKEMONS:
-      return [...action.payload]
+    case FILL_ALL:
+      return { ...state, pokemons: action.payload };
+    case RESET:
+      return { ...state, pokemons: [] };
+    case ADD_PAGE:
+      return {
+        ...state,
+        pokemons: [...state.pokemons, ...action.payload],
+      };
     default:
       return state;
   }

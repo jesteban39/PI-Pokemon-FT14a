@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
+import { STAT_NAMES } from "./index";
 export default function Pokemon() {
   let pokemon = {
     id: 3003,
-    name: "poke-pru",
+    name: "poke-detail",
     height: 4,
     weight: 60,
     stats: {
@@ -12,12 +13,8 @@ export default function Pokemon() {
       speed: 44,
     },
     img: "https://assets.pokemon.com/assets/cms2/img/pokedex/full/005.png",
-    types: [
-      { id: 9, name: "electric" },
-      { id: 13, name: "rock" },
-    ],
+    types: ["electric", "rock"],
   };
-  pokemon.stats = Object.entries(pokemon.stats);
   return (
     <div className="pokemon">
       <br />
@@ -32,15 +29,17 @@ export default function Pokemon() {
         <label>Types</label>
         <div>
           {pokemon.types.map((type) => (
-            <label key={type.id}>{type.name}</label>
+            <label key={type}>{type}</label>
           ))}
         </div>
       </div>
       <div>
         <label>Stats</label>
         <div>
-          {pokemon.stats.map((stat, idx) => (
-            <label key={idx}>{` ${stat[0]}: ${stat[1]} `}</label>
+          {STAT_NAMES.map((stat) => (
+            <label
+              key={stat}
+            >{` ${stat}: ${pokemon.stats[stat]} `}</label>
           ))}
         </div>
       </div>

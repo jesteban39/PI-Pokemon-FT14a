@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { STAT_NAMES } from "./index";
 
-const STAT_NAMES = ["life", "force", "defense", "speed"]
 
 export default function AddPokemon() {
   const [name, setName] = useState("");
@@ -42,7 +42,7 @@ export default function AddPokemon() {
     const { name, value } = event.target;
     setStats((state) => {
       state[name] = value;
-      return {...state};
+      return { ...state };
     });
   }
 
