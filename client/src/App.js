@@ -1,6 +1,6 @@
 import "./App.css";
 import { Route } from "react-router-dom";
-import { LandingPage, Home, Pokemon, AddPokemon } from "./components";
+import { LandingPage, Home, PokemonDetails, AddPokemon } from "./components";
 //import "./App.css";
 
 export default function App() {
@@ -13,7 +13,7 @@ export default function App() {
         <Home />
       </Route>
       <Route path="/pokemon/:id" exact>
-        <Pokemon />
+        <PokemonDetails />
       </Route>
       <Route path="/add/" exact>
         <AddPokemon />

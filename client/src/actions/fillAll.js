@@ -16,7 +16,7 @@ export default function fillAll() {
       } while (exit);
       dispatch({ type: FILL_ALL, payload: allPokemons });
     } catch (error) {
-      alert(error);
+      console.error(error);
     }
   };
 }

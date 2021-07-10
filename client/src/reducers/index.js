@@ -1,7 +1,15 @@
-import { FILL_ALL, RESET, ADD_PAGE } from "../actions";
+import { FILL_ALL, RESET, ADD_PAGE, GET_DETAILS } from "../actions";
 
 const initialState = {
-  pokemonDetail: {},
+  pokemonDetails: {
+    id: 0,
+    name: "",
+    height: 0,
+    weight: 0,
+    stats: {},
+    img: "",
+    types: [],
+  },
   pokemons: [
     {
       id: 0,
@@ -30,6 +38,8 @@ export default function rootReducer(state = initialState, action) {
         ...state,
         pokemons: [...state.pokemons, ...action.payload],
       };
+    case GET_DETAILS:
+      return { ...state, pokemonDetails: action.payload };
     default:
       return state;
   }

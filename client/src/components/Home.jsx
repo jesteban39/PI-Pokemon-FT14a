@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import  {fillAll}  from "../actions";
+import { fillAll, getDetails } from "../actions";
 import { Link } from "react-router-dom";
 
 import Select from "./Select";
@@ -43,9 +43,13 @@ export default function Home() {
   function handleSearch(event) {
     event.preventDefault();
     const { value } = event.target;
-    setSort(value);    
+    setSort(value);
   }
-  //console.log("data: ", pokemons);
+  function handle(event) {
+    console.log(" targer: ", event.target.name);
+    let id = event.target.name;
+    dispatch(getDetails(id));
+  }
 
   return (
     <div className="home">
@@ -91,18 +95,25 @@ export default function Home() {
         <Link to="/add">
           <span>Add pokemon</span>
         </Link>
-        <br />
+        {pokemons.map((pokemon) => (
+          <div key={pokemon.id}>
+            <Link onClick={handle} to={`/pokemon/:${pokemon.id}`}>
+              <img
+                name={pokemon.id}
+                width="120"
+                height="150"
+                src={pokemon.img}
+                alt="img"
+              />
+            </Link>
 
-        {pokemons.map((pokemon,idx) => (
-          <Link key={pokemon.id} to={`/pokemon/:${pokemon.id}`}>
-            <label>{pokemon.name}</label>
-            <img width="120" height="160" src={pokemon.img} alt="img" />
             <div>
+              <label name={pokemon.id}>{pokemon.name}</label>
               {pokemon.types.map((type) => (
                 <label key={type}>{`  ${type}  `}</label>
               ))}
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </div>

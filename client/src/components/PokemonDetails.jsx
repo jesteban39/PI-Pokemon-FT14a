@@ -1,20 +1,9 @@
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { STAT_NAMES } from "./index";
-export default function Pokemon() {
-  let pokemon = {
-    id: 3003,
-    name: "poke-detail",
-    height: 4,
-    weight: 60,
-    stats: {
-      life: 35,
-      force: 55,
-      defense: 46,
-      speed: 44,
-    },
-    img: "https://assets.pokemon.com/assets/cms2/img/pokedex/full/005.png",
-    types: ["electric", "rock"],
-  };
+
+export default function PokemonDetails() {
+  const pokemon = useSelector((state) => state.pokemonDetails);
   return (
     <div className="pokemon">
       <br />
