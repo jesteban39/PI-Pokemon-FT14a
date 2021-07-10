@@ -6,35 +6,21 @@ const {
 } = require("../actions");
 const router = Router();
 
-router.get("/", (req, res) => {
-  let { name } = req.query;
-  if (name) {
-    name = verifyName(name);
-    console.log("id-> ", name);
+const ROUTE = "http://localhost:3001/pokemons";
+const TOTAL = 40;
 
-    if (!name)
-      return res.status(404).json({
-        message: "name in not valid",
-        data: {},
-      });
-    return searchPokemon(name)
-      .then((pokemon) => {
-        return res.json({
-          message: "successful search",
-          data: pokemon,
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-        return res.status(404).json({
-          message: `No matches found for ${name}`,
-          data: {},
-        });
-      });
-  }
+//?from=1&limit=12
+router.get("/", (req, res) => {
+  let { from, limit, name, id } = req.query;
+  from = parseInt(from);
+  if (!from || from < 1) from = 1;
+  //if (from > TOTAl) from = TOTAL;
+  limit = parseInt(limit);
+  if (!limit || limit < 1) limit = 12;
 
   let pokemonsP = [];
-  for (let i = 1; i <= 12; i++) {
+  let i = from;
+  for (; i < from + limit && i <= TOTAL; i++) {
     pokemonsP.push(
       searchPokemon(i).then((pokemon) => {
         const { id, name, img, types } = pokemon;
@@ -44,6 +30,10 @@ router.get("/", (req, res) => {
   }
   Promise.all(pokemonsP).then((pokemons) => {
     return res.json({
+      count: TOTAL,
+      previous:
+        from > 1 ? ROUTE + `?from=${from}&limit=${limit}` : null,
+      next: i <= TOTAL ? ROUTE + `?from=${i}&limit=${limit}` : null,
       message: "successful search",
       data: pokemons,
     });
@@ -52,7 +42,7 @@ router.get("/", (req, res) => {
 
 router.get("/:id", (req, res) => {
   let { id } = req.params;
-  id = parseInt(id.replace(/\D/g, ""));
+  id = parseInt(id);
   if (!id)
     return res.status(404).json({
       message: "id should be a number",
@@ -92,7 +82,7 @@ router.post("/", (req, res) => {
         data: {
           id: newPokemon.id + 3000,
           name: newPokemon.name,
-        }
+        },
       });
     })
     .catch((error) => {
@@ -105,3 +95,30 @@ router.post("/", (req, res) => {
 });
 
 module.exports = router;
+/* 
+let { name } = req.query;
+  if (name) {
+    name = verifyName(name);
+    console.log("id-> ", name);
+
+    if (!name)
+      return res.status(404).json({
+        message: "name in not valid",
+        data: {},
+      });
+    return searchPokemon(name)
+      .then((pokemon) => {
+        return res.json({
+          message: "successful search",
+          data: pokemon,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        return res.status(404).json({
+          message: `No matches found for ${name}`,
+          data: {},
+        });
+      });
+  }
+ */
