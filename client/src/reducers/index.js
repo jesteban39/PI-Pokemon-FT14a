@@ -1,6 +1,13 @@
-import { FILL_ALL, RESET, ADD_PAGE, GET_DETAILS } from "../actions";
+import {
+  FILL_ALL,
+  RESET,
+  ADD_PAGE,
+  GET_DETAILS,
+  FILL_TYPES,
+} from "../actions";
 
 const initialState = {
+  typeNames: [],
   pokemonDetails: {
     id: 0,
     name: "",
@@ -40,6 +47,8 @@ export default function rootReducer(state = initialState, action) {
       };
     case GET_DETAILS:
       return { ...state, pokemonDetails: action.payload };
+    case FILL_TYPES:
+      return { ...state, typeNames: action.payload };
     default:
       return state;
   }

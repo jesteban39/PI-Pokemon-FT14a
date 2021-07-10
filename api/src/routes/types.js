@@ -3,11 +3,17 @@ const { Grade } = require("../db.js");
 const router = Router();
 
 router.get("/", (req, res) => {
-  return Grade.findAll({ attributes: ["id", "name"] })
-    .then((types) => res.json(types))
-    .catch((err) =>
-      res.status(404).json({ message: "no types found" })
-    );
+  return Grade.findAll({ attributes: ["name"] })
+    .then((types) => {
+      return res.json({
+        mesages: "successful search",
+        count: types.length,
+        data: types.map((type) =>type.name)
+      })})
+    .catch((err) => {
+      console.error(err);
+      return res.status(404).json({ message: "no types found" });
+    });
 });
 
 module.exports = router;
