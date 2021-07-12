@@ -36,10 +36,14 @@ const searchInApi = (payload) => {
 
 const searchInDb = (payload) => {
   let id = parseInt(payload);
-  if (id) {
+  let name = new String(payload).replace(/[^a-z\s\-]/g, "");
+  if (id && id > 3000 && id < 3100) {
     attribute = "id";
-    payload -= 3000;
-  } else attribute = "name";
+    payload = id - 3000;
+  } else if (name && name.length > 2) {
+    attribute = "name";
+    payload = payload;
+  } else throw new TypeError("datos incorrectos");
 
   //return Pokemon.findByPk(payload, { include: Grade });
   return Pokemon.findAll({

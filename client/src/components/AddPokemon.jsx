@@ -1,48 +1,77 @@
 import { useState } from "react";
-import { STAT_NAMES } from "./index";
+import { Link } from "react-router-dom";
+import { fillTypes, sentNewPokemon } from "../actions";
+import { STAT_NAMES, DEFAUL_IMG } from "./index";
 import { useDispatch, useSelector } from "react-redux";
+import Select from "./Select";
 
 export default function AddPokemon() {
   const dispatch = useDispatch();
-  const grades = useSelector((state) => state.typeNames);
+
+  const grades = [
+    "Select types",
+    ...useSelector((state) => state.typeNames),
+  ];
+
+  if (grades.length <= 1) dispatch(fillTypes());
 
   const [name, setName] = useState("");
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
-  const [image, setImage] = useState("");
+  const [img, setImg] = useState("");
   const [stats, setStats] = useState({});
   const [types, setTypes] = useState([]);
-
-  const [finish, setFinish] = useState([true, true, true, false]);
+  const [finish, setFinish] = useState({}); //useState([false, true, false]);
 
   function handleName(event) {
-    const name = event.target.value
-      .toLowerCase()
-      .replace(/[^a-z\s]/g, "");
-    setName(name);
-    handleFinish(name.length > 2, 0);
+    let { value } = event.target;
+    value = value.trim().replace(/[^a-z\s]/gi, "");
+    setName(value);
+    setFinish((state) => {
+      state["name"] = value.length > 2;
+      return { ...state };
+    });
   }
   function handleHeight(event) {
     const { value } = event.target;
-    setHeight(value);
-    handleFinish(value > 0 && value < 200, 1);
+    if (value >= 0 && value < 300) setHeight(value);
+    setFinish((state) => {
+      state["height"] = value > 0;
+      return { ...state };
+    });
   }
   function handleWeight(event) {
     const { value } = event.target;
-    setWeight(value);
-    handleFinish(value > 0 && value < 200, 2);
+    if (value >= 0 && value < 100) setWeight(value);
+    setFinish((state) => {
+      state["weight"] = value > 0;
+      return { ...state };
+    });
   }
-  function handleImage(event) {
-    const img = event.target.value;
-    setImage(img);
-    handleFinish(/^https?:\/\/[\S]+(\.png|\.jpg)$/g.test(img), 3);
+  function handleImg(event) {
+    const image = event.target.value;
+    setImg(image);
+    setFinish((state) => {
+      const reEx = /^https?:\/\/[^\s'"]+\.(png|jpg)$/;
+      state["image"] = !image || reEx.test(image);
+      return { ...state };
+    });
   }
   function handleTypes(event) {
-    const { name, checked } = event.target;
-    console.log("check: ", checked);
-    if (checked) {
-      setTypes((state) => [...state, name]);
-    } else {
+    const { name, checked, value } = event.target;
+
+    if (
+      value !== "Select types" &&
+      !name &&
+      types.length < 6 &&
+      !types.includes(value)
+    ) {
+      setFinish((state) => {
+        state["type"] = true;
+        return { ...state };
+      });
+      return setTypes((state) => [...state, value]);
+    } else if (!checked && name && types.length > 1) {
       setTypes((state) => state.filter((type) => type !== name));
     }
   }
@@ -55,51 +84,66 @@ export default function AddPokemon() {
     });
   }
 
-  function handleFinish(condition, idx) {
-    if (condition)
-      setFinish((state) => {
-        state[idx] = true;
-        return state;
-      });
-    else
-      setFinish((state) => {
-        state[idx] = false;
-        return state;
-      });
+  function handleSubmit(event) {
+    console.log("res: ", "handle");
+    event.preventDefault();
+    let newPokemon = {
+      name: name.toLowerCase().replace(/[\s]+/g, "-"),
+      height: Math.floor(height / 10) || 1,
+      weight: Math.floor(weight * 10) || 1,
+      img: img || DEFAUL_IMG,
+      lafe: stats.life || 1,
+      force: stats.force,
+      defense: stats.defense,
+      speed: stats.speed,
+      types,
+    };
+
+    dispatch(sentNewPokemon(newPokemon));
   }
 
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <h3>Add a new Pokemon</h3>
       <div>
-        <label>Name :</label>
-        <input value={name} onChange={handleName} />
-        <label>Height :</label>
-        <input
-          type="integer"
-          value={height}
-          onChange={handleHeight}
-        />
-        <label>Weight :</label>
-        <input
-          type="integer"
-          value={weight}
-          onChange={handleWeight}
-        />
+        <div>
+          <label>Name :</label>
+          <input value={name} onChange={handleName} />
+        </div>
+        <div>
+          <label>Height: {height} cm</label>
+          <input
+            type="number"
+            value={height}
+            onChange={handleHeight}
+          />
+        </div>
+
+        <div>
+          <label>Weight: {weight} kg</label>
+          <input
+            type="number"
+            value={weight}
+            onChange={handleWeight}
+          />
+        </div>
+
         <label>Image :</label>
-        <input type="url" value={image} onChange={handleImage} />
+        <input type="url" value={img} onChange={handleImg} />
       </div>
-      <input
-        type="submit"
-        value="Add"
-        disabled={finish.includes(false)}
-      />
+
       <div>
-        <label>{types}</label>
-        {grades.map((type) => (
+        <label>Types:{types}</label>
+        <Select
+          options={grades}
+          name="Types"
+          onChange={handleTypes}
+        />
+        {types.map((type) => (
           <div key={type}>
             <label>{type}</label>
             <input
+              checked={true}
               name={type}
               type="checkbox"
               onChange={handleTypes}
@@ -110,16 +154,32 @@ export default function AddPokemon() {
       <div>
         {STAT_NAMES.map((stat) => (
           <div key={stat}>
-            <label>{stat}</label>
+            <label>
+              {stat}: {stats[stat]}
+            </label>
             <input
+              min="1"
+              max="199"
               name={stat}
-              type="number"
-              value={stats[stat] || ""}
+              type="range"
+              value={stats[stat] || 1}
               onChange={handleStats}
             />
           </div>
         ))}
       </div>
+      <input
+        type="submit"
+        value="Add"
+        onSubmit={handleSubmit}
+        disabled={
+          Object.keys(finish).length < 5 ||
+          Object.values(finish).includes(false)
+        }
+      />
+      <Link to="/home">
+        <button>Cancel</button>
+      </Link>
     </form>
   );
 }

@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { fillAll, getDetails } from "../actions";
+import {
+  STAT_NAMES,
+  DEFAUL_IMG,
+  ORIGIN_NAMES,
+  SORT_NAMES,
+} from "../components";
+import { fillAll, getDetails, fillTypes } from "../actions";
 import { Link } from "react-router-dom";
 
 import Select from "./Select";
 
-const ORIGIN_NAMES = ["all", "favorite", "existing", "creations"];
-const SORT_NAMES = ["number", "name", "force", "life"];
-const TYPE_NAMES = ["all", "rock", "normal", "undefine"];
 
 export default function Home() {
   const [name, setName] = useState("");
@@ -19,6 +22,10 @@ export default function Home() {
 
   const dispatch = useDispatch();
   const pokemons = useSelector((state) => state.pokemons);
+  const typeNames = useSelector((state) => state.typeNames);
+
+  if (pokemons.length <= 1) dispatch(fillAll());
+  if (typeNames.length <= 1) dispatch(fillTypes());
 
   function handleName(event) {
     const { value } = event.target;
@@ -69,7 +76,7 @@ export default function Home() {
         />
         <Select
           name="Type: "
-          options={TYPE_NAMES}
+          options={typeNames}
           onChange={handleType}
         />
       </form>
