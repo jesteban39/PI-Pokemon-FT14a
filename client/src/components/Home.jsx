@@ -6,12 +6,12 @@ import {
   DEFAUL_IMG,
   ORIGIN_NAMES,
   SORT_NAMES,
+  PagesPokemons
 } from "../components";
-import { fillAll, getDetails, fillTypes } from "../actions";
+import { fillTypes } from "../actions";
 import { Link } from "react-router-dom";
 
 import Select from "./Select";
-
 
 export default function Home() {
   const [name, setName] = useState("");
@@ -21,11 +21,10 @@ export default function Home() {
   const [SortBy, setSortBy] = useState("number");
 
   const dispatch = useDispatch();
-  const pokemons = useSelector((state) => state.pokemons);
-  const typeNames = useSelector((state) => state.typeNames);
+  const typeNames = ["all", ...useSelector((state) => state.typeNames)]
 
-  if (pokemons.length <= 1) dispatch(fillAll());
-  if (typeNames.length <= 1) dispatch(fillTypes());
+  //if (typeNames.length <= 1) dispatch(fillTypes());
+
 
   function handleName(event) {
     const { value } = event.target;
@@ -51,11 +50,6 @@ export default function Home() {
     event.preventDefault();
     const { value } = event.target;
     setSort(value);
-  }
-  function handle(event) {
-    console.log(" targer: ", event.target.name);
-    let id = event.target.name;
-    dispatch(getDetails(id));
   }
 
   return (
@@ -96,33 +90,10 @@ export default function Home() {
           onChange={handleSortBy}
         />
       </form>
-
-      <div>
-        <span>40 pokemons</span>
-        <Link to="/add">
-          <span>Add pokemon</span>
-        </Link>
-        {pokemons.map((pokemon) => (
-          <div key={pokemon.id}>
-            <Link onClick={handle} to={`/pokemon/:${pokemon.id}`}>
-              <img
-                name={pokemon.id}
-                width="120"
-                height="150"
-                src={pokemon.img}
-                alt="img"
-              />
-            </Link>
-
-            <div>
-              <label name={pokemon.id}>{pokemon.name}</label>
-              {pokemon.types.map((type) => (
-                <label key={type}>{`  ${type}  `}</label>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+      <Link to="/add">
+        <span>Add pokemon</span>
+      </Link>
+      <PagesPokemons origin={origin} type={type}/>
     </div>
   );
 }

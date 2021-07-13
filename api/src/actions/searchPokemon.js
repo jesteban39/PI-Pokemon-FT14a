@@ -9,10 +9,22 @@ const URL_ID = "https://pokeapi.co/api/v2/pokemon/";
  * @returns Pomise for a pokemon
  */
 module.exports = searchPokemon = (payload) => {
-  return searchInApi(payload).then(
+  return searchInApi(payload)
+    .then((pokemon) => pokemon);
+    /* 
+    .catch((error) => {
+      //console.error(error);
+      return error;
+    });
+  then(
     (pokemon) => pokemon,
     () => searchInDb(payload)
-  );
+  )
+    .then((pokemon) => pokemon)
+    .catch((error) => {
+      console.error(error);
+      return error;
+    }); */
 };
 
 const searchInApi = (payload) => {
@@ -43,7 +55,7 @@ const searchInDb = (payload) => {
   } else if (name && name.length > 2) {
     attribute = "name";
     payload = payload;
-  } else throw new TypeError("datos incorrectos");
+  } else throw new TypeError(`datos incorrectos: ${payload}`);
 
   //return Pokemon.findByPk(payload, { include: Grade });
   return Pokemon.findAll({

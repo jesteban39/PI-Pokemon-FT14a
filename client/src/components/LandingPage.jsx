@@ -1,15 +1,19 @@
 import { Link } from "react-router-dom";
 import { fillAll, fillTypes } from "../actions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function LandingPage() {
+  const countTypes = useSelector((state) => state.typeNames.length);
+  const total = useSelector((state) => state.count);
   const dispatch = useDispatch();
-  dispatch(fillTypes());
-  dispatch(fillAll());
+
   return (
     <div className="landingPage">
       <Link to="/home">
-        <button>Pokemons</button>
+        <button
+        >
+          Pokemons
+        </button>
       </Link>
     </div>
   );

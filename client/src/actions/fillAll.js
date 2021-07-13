@@ -1,5 +1,63 @@
-import { URL, FILL_ALL, RESET, ADD_PAGE } from "./index";
+import {
+  getState,
+  URL,
+  UPDATE,
+  UPDATE_PAGES,
+  FILL_NEXT,
+  FILL_ALL,
+  RESET,
+  ADD_PAGE,
+} from "./index";
 
+export default function fillAll(state) {
+  return function (dispatch) {
+    if (state.free === true) {
+      console.log("state: ", state);
+      dispatch({
+        type: UPDATE,
+        payload: { total: 0, free: false },
+      });
+      return fetch(`${URL}?from=0&limit=1`)
+        .then((response) => {
+          if (response.ok) return response.json();
+          else throw new Error(`fetch 0 failed`);
+        })
+        .then((json) => {
+          if (state.total < json.count) {
+            dispatch({
+              type: UPDATE,
+              payload: { total: json.count, free: false },
+            });
+            let next = fetch(`${URL}?from=1&limit=1`);
+            for (let i = 1; i <= json.count; i++) {
+              next = next
+                .then((response) => {
+                  if (response.ok) return response.json();
+                  else throw new Error(`fetch ${next} failed`);
+                })
+                .then((json) => {
+                  dispatch({ type: FILL_NEXT, payload: json.data });
+                  dispatch({ type: UPDATE_PAGES})
+                  if (json.next) return fetch(json.next);
+                  else
+                    dispatch({
+                      type: UPDATE,
+                      payload: { total: json.count, free: true },
+                    });
+                });
+            }
+            return next;
+          }
+          return true;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  };
+}
+
+/*
 export default function fillAll() {
   return async function (dispatch) {
     let allPokemons = [];
@@ -21,7 +79,7 @@ export default function fillAll() {
   };
 }
 
-/*
+
 export default function fillAll() {
   return function (dispatch) {
     fetch(URL)
@@ -42,7 +100,6 @@ export default function fillAll() {
       });
   };
 }
-
 export function fillAll_() {
   return async function (dispatch) {
     let allPokemons = [];

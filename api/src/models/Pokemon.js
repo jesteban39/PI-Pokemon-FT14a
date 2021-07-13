@@ -23,6 +23,6 @@ module.exports = (sequelize) => {
       img: { type: STRING },
       // `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/&{id}.png`
     },
-    { initialAutoIncrement: "3000" }
+    { initialAutoIncrement: 3000 }
   );
 };

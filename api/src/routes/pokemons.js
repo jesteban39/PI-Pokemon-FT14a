@@ -16,7 +16,15 @@ router.get("/", (req, res) => {
   if (!from || from < 1) from = 1;
   //if (from > TOTAl) from = TOTAL;
   limit = parseInt(limit);
-  if (!limit || limit < 1) limit = 12;
+  if (!limit || limit < 1 ) limit = 12;
+
+  if(from <= 0) return res.json({
+    count: TOTAL,
+    previous: null,
+    next: req.path + `?from=1&limit=${limit}`,
+    message: "successful search",
+    data: {}
+  });
 
   let pokemonsP = [];
   let i = from;
@@ -28,16 +36,24 @@ router.get("/", (req, res) => {
       })
     );
   }
-  Promise.all(pokemonsP).then((pokemons) => {
-    return res.json({
-      count: TOTAL,
-      previous:
-        from > 1 ? ROUTE + `?from=${from}&limit=${limit}` : null,
-      next: i <= TOTAL ? ROUTE + `?from=${i}&limit=${limit}` : null,
-      message: "successful search",
-      data: pokemons,
+  Promise.all(pokemonsP)
+    .then((pokemons) => {
+      return res.json({
+        count: TOTAL,
+        previous:
+          from > 1 ? ROUTE + `?from=${from}&limit=${limit}` : null,
+        next: i <= TOTAL ? ROUTE + `?from=${i}&limit=${limit}` : null,
+        message: "successful search",
+        data: pokemons,
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      return res.status(500).json({
+        mesages: "uups!",
+        error: error,
+      });
     });
-  });
 });
 
 router.get("/:id", (req, res) => {

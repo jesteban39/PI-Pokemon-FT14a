@@ -25,7 +25,7 @@ export default function AddPokemon() {
 
   function handleName(event) {
     let { value } = event.target;
-    value = value.trim().replace(/[^a-z\s]/gi, "");
+    value = value.toLowerCase().replace(/[^a-z\s]/g, "");
     setName(value);
     setFinish((state) => {
       state["name"] = value.length > 2;
@@ -88,7 +88,7 @@ export default function AddPokemon() {
     console.log("res: ", "handle");
     event.preventDefault();
     let newPokemon = {
-      name: name.toLowerCase().replace(/[\s]+/g, "-"),
+      name: name.trim().replace(/[\s]+/g, "-"),
       height: Math.floor(height / 10) || 1,
       weight: Math.floor(weight * 10) || 1,
       img: img || DEFAUL_IMG,
@@ -98,8 +98,13 @@ export default function AddPokemon() {
       speed: stats.speed,
       types,
     };
-
-    dispatch(sentNewPokemon(newPokemon));
+    if (
+      window.confirm(
+        `se creara el pokemon ${newPokemon.name}, desea continuar?`
+      )
+    ) {
+      dispatch(sentNewPokemon(newPokemon));
+    }
   }
 
   return (
