@@ -1,42 +1,35 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
-
-import {udatePages, getDetails } from "../actions";
+import { PageNav } from "./index";
+import { udatePages, getDetails } from "../actions";
 import { Link } from "react-router-dom";
-
-var con = 0;
 
 export default function Pagespages(props) {
   const dispatch = useDispatch();
-  const [currentPage,setCurrentPage] = useState(1);
-  const page = useSelector((state) => state.pages[0]);
-  //console.log("page: ",page)
+  const page = useSelector((state) => state.pages);
 
- // dispatch(udatePages());
-/* 
-  function filtered() {
-    if (origin === "creations" && types !== "all")
-      return pages.filter((pokemon) => {
-        return pokemon.id > 3000;
-      });
-    if (origin === "existing" && types !== "all")
-      return pages.filter((pokemon) => {
-        return pokemon.id < 3000;
-      });
-    return pages;
-  } */
-
+  const [currentPage, setPage] = useState(1);
 
   function handleDetail(event) {
     let id = event.target.name;
     dispatch(getDetails(id));
   }
 
+  function handlePage(value) {
+    setPage(value);
+  }
+
   return (
     <div>
-      <span>40 pages Pokemons</span>
+      <PageNav
+        totalPages={page.length}
+        value={currentPage}
+        onChange={handlePage}
+      />
 
-      {page.map((pokemon) => (
+      <span placeholder="inicial">40 pages Pokemons</span>
+
+      {page[currentPage].map((pokemon) => (
         <div key={pokemon.id}>
           <Link onClick={handleDetail} to={`/pokemon/:${pokemon.id}`}>
             <img

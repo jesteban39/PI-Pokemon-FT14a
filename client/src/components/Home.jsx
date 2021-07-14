@@ -6,8 +6,9 @@ import {
   DEFAUL_IMG,
   ORIGIN_NAMES,
   SORT_NAMES,
+  PageNav,
   PagesPokemons
-} from "../components";
+} from "./index";
 import { fillTypes } from "../actions";
 import { Link } from "react-router-dom";
 
@@ -51,6 +52,7 @@ export default function Home() {
     const { value } = event.target;
     setSort(value);
   }
+
 
   return (
     <div className="home">

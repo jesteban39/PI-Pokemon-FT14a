@@ -10,7 +10,7 @@ import {
   URL,
   SENT_NEW_POKEMON,
 } from "../actions";
-export const POKEMON_DEFAULT = {
+export const POKEMON_PENDING = {
   id: 0,
   name: " --- ",
   height: 0,
@@ -20,14 +20,14 @@ export const POKEMON_DEFAULT = {
   types: [" -- "],
 };
 
-export const POKEMONS_FOR_PAGE = 12;
+export const PAGE_LIMIT = 12;
 
 const initialState = {
   total: 0,
-  free: true,
-  pages: [[POKEMON_DEFAULT]],
+  free: true, 
+  pages: [[POKEMON_PENDING]],
   typeNames: [],
-  pokemonDetails: POKEMON_DEFAULT,
+  pokemonDetails: POKEMON_PENDING,
   pokemons: [],
 };
 
@@ -43,22 +43,26 @@ export default function rootReducer(state = initialState, action) {
     case UPDATE:
       return {
         ...state,
-        total: action.payload.total,
         free: action.payload.free,
       };
     case FILL_NEXT:
       return {
         ...state,
         pokemons: [...state.pokemons, ...action.payload],
+        total: state.total + action.payload.length,
       };
     case FILL_ALL:
-      return { ...state, pokemons: action.payload };
+      return {
+        ...state,
+        total: action.payload.length,
+        pokemons: action.payload,
+      };
     case UPDATE_PAGES:
-      if (state.pokemons.length > 0) {
+      if (state.total > 0) {
         let pages = [[]];
         let countPges = 0;
-        for (let idx = 0; idx < state.pokemons.length; idx++) {
-          if ((idx + 1) % POKEMONS_FOR_PAGE === 0) {
+        for (let idx = 0; idx < state.total; idx++) {
+          if ((idx + 1) % PAGE_LIMIT === 0) {
             countPges++;
             pages.push([]);
           }

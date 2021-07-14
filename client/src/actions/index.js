@@ -5,7 +5,6 @@ import getDetails from "./getDetails";
 import udatePages from "./udatePages";
 import fillTypes from "./fillTypes";
 import fillNext from "./fillNext";
-import getNext from "../reducers";
 import fillAll from "./fillAll";
 
 export const URL = "http://localhost:3001/pokemons";
@@ -22,7 +21,6 @@ export const RESET = "RESET";
 export {
   udatePages,
   getState,
-  getNext,
   fillAll,
   fillNext,
   getDetails,
