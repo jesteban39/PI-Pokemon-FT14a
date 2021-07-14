@@ -7,22 +7,20 @@ import {
   ORIGIN_NAMES,
   SORT_NAMES,
   PageNav,
-  PagesPokemons
+  Filter,
+  Select,
+  PagesPokemons,
 } from "./index";
 import { fillTypes } from "../actions";
 import { Link } from "react-router-dom";
 
-import Select from "./Select";
 
 export default function Home() {
   const [name, setName] = useState("");
-  const [origin, setOrigin] = useState("all");
-  const [type, setType] = useState("all");
   const [Sort, setSort] = useState("descent");
   const [SortBy, setSortBy] = useState("number");
 
   const dispatch = useDispatch();
-  const typeNames = ["all", ...useSelector((state) => state.typeNames)]
 
   //if (typeNames.length <= 1) dispatch(fillTypes());
 
@@ -31,14 +29,7 @@ export default function Home() {
     const { value } = event.target;
     setName(value);
   }
-  function handleOrigin(event) {
-    const { value } = event.target;
-    setOrigin(value);
-  }
-  function handleType(event) {
-    const { value } = event.target;
-    setType(value);
-  }
+  
   function handleSort(event) {
     const { value } = event.target;
     setSort(value);
@@ -63,19 +54,7 @@ export default function Home() {
         <input type="submit" value="Search" />
       </form>
 
-      <form>
-        <label>Filter</label>
-        <Select
-          name="Origin: "
-          options={ORIGIN_NAMES}
-          onChange={handleOrigin}
-        />
-        <Select
-          name="Type: "
-          options={typeNames}
-          onChange={handleType}
-        />
-      </form>
+      <Filter/>
 
       <form>
         <label>Sort</label>
@@ -93,9 +72,9 @@ export default function Home() {
         />
       </form>
       <Link to="/add">
-        <span>Add pokemon</span>
+        <label>Add pokemon</label>
       </Link>
-      <PagesPokemons origin={origin} type={type}/>
+      <PagesPokemons/>
     </div>
   );
 }

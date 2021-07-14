@@ -24,7 +24,9 @@ export const PAGE_LIMIT = 12;
 
 const initialState = {
   total: 0,
-  free: true, 
+  free: true,
+  currentPage: 1,
+  filter: { type: "all", origin: "all" },
   pages: [[POKEMON_PENDING]],
   typeNames: [],
   pokemonDetails: POKEMON_PENDING,
@@ -45,6 +47,8 @@ export default function rootReducer(state = initialState, action) {
         ...state,
         free: action.payload.free,
       };
+    case "CURRETN_PAGE":
+      return { ...state, currentPage: action.payload };
     case FILL_NEXT:
       return {
         ...state,
@@ -57,18 +61,36 @@ export default function rootReducer(state = initialState, action) {
         total: action.payload.length,
         pokemons: action.payload,
       };
+    case "FILTER":
+      //console.log("filter state: ",action.payload)
+      return { ...state, currentPage: 1, filter: action.payload };
     case UPDATE_PAGES:
       if (state.total > 0) {
+        const { type, origin } = state.filter;
         let pages = [[]];
+        let min = 0;
+        let max = 3999;
         let countPges = 0;
+        let count = 0;
+        if (origin === "creations") min = 3000;
+        else if (origin === "existing") max = 1000;
+
         for (let idx = 0; idx < state.total; idx++) {
-          if ((idx + 1) % PAGE_LIMIT === 0) {
-            countPges++;
+          const pokemon = state.pokemons[idx];
+          if ((count + 1) % PAGE_LIMIT === 0) {
             pages.push([]);
+            countPges++;
+          }
+          if (
+            pokemon.id > min &&
+            pokemon.id < max &&
+            (type === "all" || pokemon.types.includes(type))
+          ) {
+            pages[countPges].push(pokemon);
+            count++;
           }
           //console.log("pokemon: ",state.pokemons[idx]);
           //console.log("idx: ",idx);
-          pages[countPges].push(state.pokemons[idx]);
           //console.log("state pages: ", pages);
         }
         return { ...state, pages };
@@ -83,6 +105,6 @@ export default function rootReducer(state = initialState, action) {
     case FILL_TYPES:
       return { ...state, typeNames: action.payload.sort() };
     default:
-      return state;
+      return state || initialState;
   }
 }

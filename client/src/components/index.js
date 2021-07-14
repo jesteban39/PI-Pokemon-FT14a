@@ -3,6 +3,8 @@ import LandingPage from "./LandingPage.jsx";
 import PagesPokemons from "./PagesPokemons";
 import AddPokemon from "./AddPokemon";
 import PageNav from "./PageNav.jsx";
+import Filter from "./Filter";
+import Select from "./Select";
 import Home from "./Home";
 
 export const DEFAUL_IMG =
@@ -10,7 +12,6 @@ export const DEFAUL_IMG =
 export const STAT_NAMES = ["life", "force", "defense", "speed"];
 export const ORIGIN_NAMES = [
   "all",
-  "favorite",
   "existing",
   "creations",
 ];
@@ -18,8 +19,10 @@ export const SORT_NAMES = ["number", "name", "force", "life"];
 
 export {
   PageNav,
+  Select,
   LandingPage,
   Home,
+  Filter,
   PokemonDetails,
   AddPokemon,
   PagesPokemons,

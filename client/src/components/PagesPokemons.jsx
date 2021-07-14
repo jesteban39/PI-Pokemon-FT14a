@@ -4,11 +4,9 @@ import { PageNav } from "./index";
 import { udatePages, getDetails } from "../actions";
 import { Link } from "react-router-dom";
 
-export default function Pagespages(props) {
+export default function Pagespages() {
   const dispatch = useDispatch();
-  const page = useSelector((state) => state.pages);
-
-  const [currentPage, setPage] = useState(1);
+  const { pages, currentPage } = useSelector((state) => state);
 
   function handleDetail(event) {
     let id = event.target.name;
@@ -16,20 +14,20 @@ export default function Pagespages(props) {
   }
 
   function handlePage(value) {
-    setPage(value);
+    dispatch({ type: "CURRETN_PAGE", payload: value });
   }
 
   return (
     <div>
       <PageNav
-        totalPages={page.length}
+        totalPages={pages.length}
         value={currentPage}
         onChange={handlePage}
       />
 
       <span placeholder="inicial">40 pages Pokemons</span>
 
-      {page[currentPage].map((pokemon) => (
+      {pages[currentPage - 1].map((pokemon) => (
         <div key={pokemon.id}>
           <Link onClick={handleDetail} to={`/pokemon/:${pokemon.id}`}>
             <img
