@@ -16,10 +16,10 @@ export function getState() {
 }
 
 export default function App() {
-  const { typeNames, total, free } = useSelector((state) => state);
+  const state = useSelector((state) => state);
   const dispatch = useDispatch();
-  dispatch(fillTypes(typeNames.length));
-  dispatch(fillAll({total, free}));
+  dispatch(fillAll(state));
+  dispatch(fillTypes(state));
   return (
     <div className="App">
       <Route path="/" exact>

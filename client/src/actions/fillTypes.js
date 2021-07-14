@@ -1,12 +1,22 @@
-import { URL, FILL_TYPES } from "./index";
+import { URL, FILL_TYPES, UPDATE } from "./index";
 
-export default function fillTypes(totalTypes) {
+export default function fillTypes(state) {
   return function (dispatch) {
-    if (totalTypes === 0) {
+    const { free, typeNames } = state;
+    if (free && typeNames.length === 0) {
+      dispatch({
+        type: UPDATE,
+        payload: { free: false },
+      });
       return fetch("http://localhost:3001/types")
         .then((res) => res.json())
         .then((json) => {
           dispatch({ type: FILL_TYPES, payload: json.data });
+        }).finally(() => {
+          dispatch({
+            type: UPDATE,
+            payload: { free: true },
+          });
         });
     }
   };

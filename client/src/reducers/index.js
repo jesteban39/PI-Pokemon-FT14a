@@ -23,6 +23,7 @@ export const POKEMON_PENDING = {
 export const PAGE_LIMIT = 12;
 
 const initialState = {
+  next: URL + "?from=1",
   total: 0,
   free: true,
   currentPage: 1,
@@ -45,6 +46,8 @@ export default function rootReducer(state = initialState, action) {
     case UPDATE:
       return {
         ...state,
+        total: action.payload.total || state.total,
+        next: action.payload.next,
         free: action.payload.free,
       };
     case "CURRETN_PAGE":
@@ -53,20 +56,19 @@ export default function rootReducer(state = initialState, action) {
       return {
         ...state,
         pokemons: [...state.pokemons, ...action.payload],
-        total: state.total + action.payload.length,
       };
     case FILL_ALL:
       return {
         ...state,
-        total: action.payload.length,
         pokemons: action.payload,
       };
     case "FILTER":
       //console.log("filter state: ",action.payload)
       return { ...state, currentPage: 1, filter: action.payload };
     case UPDATE_PAGES:
-      if (state.total > 0) {
+      if (state.pokemons.length > 0) {
         const { type, origin } = state.filter;
+        //console.log("filter: ",type, origin)
         let pages = [[]];
         let min = 0;
         let max = 3999;
@@ -74,10 +76,10 @@ export default function rootReducer(state = initialState, action) {
         let count = 0;
         if (origin === "creations") min = 3000;
         else if (origin === "existing") max = 1000;
-
-        for (let idx = 0; idx < state.total; idx++) {
+        //console.log("origin: ",min, max)
+        for (let idx = 0; idx < state.pokemons.length; idx++) {
           const pokemon = state.pokemons[idx];
-          if ((count + 1) % PAGE_LIMIT === 0) {
+          if (count && count % PAGE_LIMIT === 0) {
             pages.push([]);
             countPges++;
           }

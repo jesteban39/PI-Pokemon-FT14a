@@ -6,14 +6,51 @@ import {
   FILL_ALL,
   RESET,
   ADD_PAGE,
+  fillTypes,
 } from "./index";
+
+function _fillAll(state) {
+  return function (dispatch) {
+    const { free, total, next, pokemons } = state;
+    if (free && next && (total === 0 || pokemons.length < total)) {
+      dispatch({
+        type: UPDATE,
+        payload: { free: false },
+      });
+      return fetch(next)
+        .then((response) => {
+          if (response && response.ok) return response.json();
+          else throw new Error(`failed ${next} fetch`);
+        })
+        .then((json) => {
+          dispatch({ type: FILL_NEXT, payload: json.data });
+          dispatch({
+            type: UPDATE,
+            payload: {
+              next: json.next,
+              total: json.count,
+              free: true,
+            },
+          });
+          dispatch({ type: UPDATE_PAGES });
+        })
+        .finally(() => {
+          dispatch({
+            type: UPDATE,
+            payload: { free: true },
+          });
+        });
+    }
+  };
+}
 
 export default function fillAll(state) {
   return function (dispatch) {
-    if (state.free === true) {
+    const { free, total, pokemons } = state;
+    if (free === true && total === 0) {
       dispatch({
         type: UPDATE,
-        payload: { total: 0, free: false },
+        payload: { total: 1, free: false },
       });
       return fetch(`${URL}?from=0&limit=1`)
         .then((response) => {
@@ -21,51 +58,48 @@ export default function fillAll(state) {
           else throw new Error(`fetch 0 failed`);
         })
         .then((json) => {
-          if (state.total < json.count) {
-            dispatch({
-              type: UPDATE,
-              payload: { total: json.count, free: false },
-            });
-            let next = fetch(`${URL}?from=1&limit=1`);
-            for (let i = 1; i <= json.count; i++) {
-              next = next
-                .then((response) => {
-                  if (response.ok) return response.json();
-                  else throw new Error(`fetch ${next} failed`);
-                })
-                .then((json) => {
-                  dispatch({ type: FILL_NEXT, payload: json.data });
-                  dispatch({ type: UPDATE_PAGES });
-                  if (json.next) return fetch(json.next);
-                  else
-                    dispatch({
-                      type: UPDATE,
-                      payload: { total: json.count, free: true },
-                    });
-                });
-            }
-            return next;
-          }
-          return true;
-        })
-        .catch((error) => {
+          //if (total < json.count) {
           dispatch({
             type: UPDATE,
-            payload: { total: state.total, free: false },
+            payload: { total: json.count || total, free: false },
           });
+          let next = fetch(`${URL}?from=1&limit=12`);
+          for (let i = 1; i <= json.count / 12 + 1; i++) {
+            next = next
+              .then((response) => {
+                if (response && response.ok) return response.json();
+                else throw new Error(`fetch ${next} failed`);
+              })
+              .then((json) => {
+                dispatch({ type: FILL_NEXT, payload: json.data });
+                dispatch({ type: UPDATE_PAGES });
+                if (json.next) return fetch(json.next);
+                //else throw Error('finally')
+              });
+          }
+          return next;
+        })
+        .catch((error) => {
           console.error(error);
-        });
+        })
+        .finally(() =>
+          dispatch({
+            type: UPDATE,
+            payload: { total, free: true },
+          })
+        );
     }
   };
 }
 
-export  function fillAll_(state) {
+function fillAll_(state) {
   return async function (dispatch) {
+    const { free, total, count } = state;
     console.log("state: ", state);
-    if (state.free === true) {
+    if (free === true) {
       dispatch({
         type: UPDATE,
-        payload: { total: state.total, free: false },
+        payload: { total: total, free: false },
       });
       try {
         let page;
@@ -75,7 +109,7 @@ export  function fillAll_(state) {
             if (response.ok) return response.json();
             else throw new Error(`fetch ${next} failed`);
           });
-          if (!page.count || state.total >= page.count) break;
+          if (!page.count || total >= page.count) break;
           console.log("state: ", state);
           console.log("url: ", next);
           dispatch({
@@ -92,7 +126,7 @@ export  function fillAll_(state) {
       } catch (error) {
         dispatch({
           type: UPDATE,
-          payload: { total: state.total, free: false },
+          payload: { total: total, free: false },
         });
         //console.error(error);
       }
