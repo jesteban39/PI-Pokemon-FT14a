@@ -1,11 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { PageNav } from "./index";
-import { udatePages, getDetails } from "../actions";
+import { udatePages, fillTypes, getDetails, fillAll } from "../actions";
 import { Link } from "react-router-dom";
 
 export default function Pagespages() {
+  const state = useSelector((state) => state);
   const dispatch = useDispatch();
+  dispatch(fillAll(state));
+  dispatch(fillTypes(state));
   const { pages, currentPage } = useSelector((state) => state);
 
   function handleDetail(event) {

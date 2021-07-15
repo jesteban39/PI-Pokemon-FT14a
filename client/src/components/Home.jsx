@@ -11,9 +11,8 @@ import {
   Select,
   PagesPokemons,
 } from "./index";
-import { fillTypes } from "../actions";
+import { fillTypes, fillAll } from "../actions";
 import { Link } from "react-router-dom";
-
 
 export default function Home() {
   const [name, setName] = useState("");
@@ -24,12 +23,11 @@ export default function Home() {
 
   //if (typeNames.length <= 1) dispatch(fillTypes());
 
-
   function handleName(event) {
     const { value } = event.target;
     setName(value);
   }
-  
+
   function handleSort(event) {
     const { value } = event.target;
     setSort(value);
@@ -44,7 +42,6 @@ export default function Home() {
     setSort(value);
   }
 
-
   return (
     <div className="home">
       <form onSubmit={handleSearch}>
@@ -54,7 +51,7 @@ export default function Home() {
         <input type="submit" value="Search" />
       </form>
 
-      <Filter/>
+      <Filter />
 
       <form>
         <label>Sort</label>
@@ -74,7 +71,7 @@ export default function Home() {
       <Link to="/add">
         <label>Add pokemon</label>
       </Link>
-      <PagesPokemons/>
+      <PagesPokemons />
     </div>
   );
 }

@@ -16,10 +16,6 @@ export function getState() {
 }
 
 export default function App() {
-  const state = useSelector((state) => state);
-  const dispatch = useDispatch();
-  dispatch(fillAll(state));
-  dispatch(fillTypes(state));
   return (
     <div className="App">
       <Route path="/" exact>

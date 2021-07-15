@@ -9,13 +9,13 @@ import {
   fillTypes,
 } from "./index";
 
-function _fillAll(state) {
+export default function fillAll(state) {
   return function (dispatch) {
     const { free, total, next, pokemons } = state;
     if (free && next && (total === 0 || pokemons.length < total)) {
       dispatch({
         type: UPDATE,
-        payload: { free: false },
+        payload: { next, total, free: false },
       });
       return fetch(next)
         .then((response) => {
@@ -34,17 +34,18 @@ function _fillAll(state) {
           });
           dispatch({ type: UPDATE_PAGES });
         })
-        .finally(() => {
+        .catch((error) => {
           dispatch({
             type: UPDATE,
-            payload: { free: true },
+            payload: { next, total, free: false },
           });
+          console.error(error);
         });
     }
   };
 }
 
-export default function fillAll(state) {
+function _fillAll(state) {
   return function (dispatch) {
     const { free, total, pokemons } = state;
     if (free === true && total === 0) {
@@ -88,48 +89,6 @@ export default function fillAll(state) {
             payload: { total, free: true },
           })
         );
-    }
-  };
-}
-
-function fillAll_(state) {
-  return async function (dispatch) {
-    const { free, total, count } = state;
-    console.log("state: ", state);
-    if (free === true) {
-      dispatch({
-        type: UPDATE,
-        payload: { total: total, free: false },
-      });
-      try {
-        let page;
-        let next = `${URL}?from=1`;
-        do {
-          page = await fetch(next).then((response) => {
-            if (response.ok) return response.json();
-            else throw new Error(`fetch ${next} failed`);
-          });
-          if (!page.count || total >= page.count) break;
-          console.log("state: ", state);
-          console.log("url: ", next);
-          dispatch({
-            type: ADD_PAGE,
-            payload: page.data,
-          });
-          next = page.next;
-        } while (next);
-        dispatch({
-          type: UPDATE,
-          payload: { total: page.count, free: true },
-        });
-        dispatch({ type: UPDATE_PAGES });
-      } catch (error) {
-        dispatch({
-          type: UPDATE,
-          payload: { total: total, free: false },
-        });
-        //console.error(error);
-      }
     }
   };
 }
