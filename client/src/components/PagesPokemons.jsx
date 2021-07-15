@@ -28,7 +28,7 @@ export default function Pagespages() {
         onChange={handlePage}
       />
 
-      <span placeholder="inicial">40 pages Pokemons</span>
+      <span >40 pages Pokemons</span>
 
       {pages[currentPage - 1].map((pokemon) => (
         <div key={pokemon.id}>

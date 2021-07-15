@@ -19,19 +19,41 @@ export const POKEMON_PENDING = {
   img: "https://pa1.narvii.com/6598/705a28560eaa4f73e57f5585c9fcfae6d5e4264e_hq.gif",
   types: [" -- "],
 };
-
 export const PAGE_LIMIT = 12;
 
+function compare({ yardstick, sequence }) {
+  if(yardstick === "number") yardstick = "id";
+  if(sequence === "ascendant"){
+    return (pokemonA, pokemonB) => {
+      if(pokemonA[yardstick] > pokemonB[yardstick] ) return 1;
+      if(pokemonA[yardstick] < pokemonB[yardstick] ) return -1;
+      return 0;
+    };    
+  }
+  if(sequence === "descent"){
+    return (pokemonA, pokemonB) => {
+      if(pokemonA[yardstick] > pokemonB[yardstick] ) return -1;
+      if(pokemonA[yardstick] < pokemonB[yardstick] ) return 1;
+      return 0;
+    };    
+  }
+
+  return (pokemonA, pokemonB) => {
+    return 0;
+  };
+}
+
 const initialState = {
-  next: URL + "?from=1",
-  total: 0,
-  free: true,
-  currentPage: 1,
-  filter: { type: "all", origin: "all" },
-  pages: [[POKEMON_PENDING]],
-  typeNames: [],
-  pokemonDetails: POKEMON_PENDING,
   pokemons: [],
+  typeNames: [],
+  pages: [[POKEMON_PENDING]],
+  currentPage: 1,
+  pokemonDetails: POKEMON_PENDING,
+  filter: { type: "all", origin: "all" },
+  sort: { yardstick: "number", sequence: "descent" },
+  next: URL + "?from=1",
+  free: true,
+  total: 0,
 };
 
 /**
@@ -62,6 +84,12 @@ export default function rootReducer(state = initialState, action) {
         ...state,
         pokemons: action.payload,
       };
+    case "SORT":
+      return {
+        ...state,
+        sort: action.payload,
+        pokemon: state.pokemons.sort(compare(action.payload)),
+      };
     case "FILTER":
       //console.log("filter state: ",action.payload)
       return { ...state, currentPage: 1, filter: action.payload };
@@ -86,7 +114,7 @@ export default function rootReducer(state = initialState, action) {
           if (
             pokemon.id > min &&
             pokemon.id < max &&
-            (type === "all" || pokemon.types.includes(type))
+            (!type || type === "all" || pokemon.types.includes(type))
           ) {
             pages[countPges].push(pokemon);
             count++;

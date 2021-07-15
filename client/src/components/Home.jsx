@@ -9,6 +9,7 @@ import {
   PageNav,
   Filter,
   Select,
+  Sort,
   PagesPokemons,
 } from "./index";
 import { fillTypes, fillAll } from "../actions";
@@ -16,9 +17,6 @@ import { Link } from "react-router-dom";
 
 export default function Home() {
   const [name, setName] = useState("");
-  const [Sort, setSort] = useState("descent");
-  const [SortBy, setSortBy] = useState("number");
-
   const dispatch = useDispatch();
 
   //if (typeNames.length <= 1) dispatch(fillTypes());
@@ -28,18 +26,10 @@ export default function Home() {
     setName(value);
   }
 
-  function handleSort(event) {
-    const { value } = event.target;
-    setSort(value);
-  }
-  function handleSortBy(event) {
-    const { value } = event.target;
-    setSortBy(value);
-  }
   function handleSearch(event) {
     event.preventDefault();
     const { value } = event.target;
-    setSort(value);
+    //dispatch(value);
   }
 
   return (
@@ -47,29 +37,20 @@ export default function Home() {
       <form onSubmit={handleSearch}>
         Search
         <label>Name:</label>
-        <input onChange={handleName} value={name} />
+        <input
+          placeholder="Search pokemon"
+          onChange={handleName}
+          value={name}
+        />
         <input type="submit" value="Search" />
       </form>
 
       <Filter />
 
-      <form>
-        <label>Sort</label>
+      <Sort />
 
-        <Select
-          name="Sort: "
-          options={["descent", "ascendant"]}
-          onChange={handleSort}
-        />
-
-        <Select
-          name="Sort by: "
-          options={SORT_NAMES}
-          onChange={handleSortBy}
-        />
-      </form>
       <Link to="/add">
-        <label>Add pokemon</label>
+        <button>Add pokemon</button>
       </Link>
       <PagesPokemons />
     </div>
