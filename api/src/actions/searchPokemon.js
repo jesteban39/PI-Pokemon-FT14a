@@ -1,7 +1,8 @@
 const axios = require("axios");
 const { Pokemon, Grade } = require("../db.js");
 
-const URL_ID = "https://pokeapi.co/api/v2/pokemon/";
+const POKEAPI = "https://pokeapi.co/api/v2/pokemon/";
+const TOTAL = 40;
 
 /**
  * search for a pokemon by entering its name or id
@@ -9,26 +10,37 @@ const URL_ID = "https://pokeapi.co/api/v2/pokemon/";
  * @returns Pomise for a pokemon
  */
 module.exports = searchPokemon = (payload) => {
-  return searchInApi(payload)
-    .then((pokemon) => pokemon);
-    /* 
-    .catch((error) => {
-      //console.error(error);
-      return error;
-    });
-  then(
-    (pokemon) => pokemon,
-    () => searchInDb(payload)
-  )
-    .then((pokemon) => pokemon)
-    .catch((error) => {
-      console.error(error);
-      return error;
-    }); */
+  let id = parseInt(payload);
+
+  if (id && id > 0 && id <= TOTAL) {
+    return searchInApi(id).then((pokemon) => pokemon);
+  }
+  if (id && id > 3000 && id < 4000) {
+    return searchInDb(id).then((pokemon) => pokemon);
+  }
+
+  let name = new String(payload)
+    .trim()
+    .toLowerCase()
+    .replace(/[\s]+/g, "-")
+    .replace(/[^a-z\-]/gi, "");
+
+  if (name && name.length > 2) {
+    return searchInDb(name).then(
+      (pokemon) => pokemon,
+      () => {
+        return searchInApi(name).then((pokemon) => {
+          if (!pokemon || pokemon.id > TOTAL) throw Error("out of range TOTAL");
+          return pokemon;
+        });
+      }
+    );
+  }
+  return searchInDb("0");
 };
 
 const searchInApi = (payload) => {
-  return axios.get(URL_ID + payload).then((data) => {
+  return axios.get(POKEAPI + payload).then((data) => {
     return {
       id: data.data.id,
       name: data.data.name,
@@ -47,29 +59,28 @@ const searchInApi = (payload) => {
 };
 
 const searchInDb = (payload) => {
-  let id = parseInt(payload);
-  let name = new String(payload).replace(/[^a-z\s\-]/g, "");
-  if (id && id > 3000 && id < 3100) {
+  let attribute = "";
+
+  if (typeof payload === "number") {
+    payload -= 3000;
     attribute = "id";
-    payload = id - 3000;
-  } else if (name && name.length > 2) {
-    attribute = "name";
-    payload = payload;
-  } else throw new TypeError(`datos incorrectos: ${payload}`);
+  } else attribute = "name";
 
   //return Pokemon.findByPk(payload, { include: Grade });
+
   return Pokemon.findAll({
     where: { [attribute]: payload },
     include: Grade, //[{model: Grade, as: "types"}],
   }).then((data) => {
     data = data[0];
     //console.log("data-> ", data);
+    if(!data) throw Error("no machets")
     return {
       id: data.id + 3000,
       name: data.name,
       height: data.height,
       weight: data.weight,
-      stas: {
+      stats: {
         life: data.life,
         force: data.force,
         defense: data.defense,

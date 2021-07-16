@@ -50,8 +50,8 @@ const initialState = {
   currentPage: 1,
   pokemonDetails: POKEMON_PENDING,
   filter: { type: "all", origin: "all" },
-  sort: { yardstick: "number", sequence: "descent" },
-  next: URL + "?from=1",
+  sort: { yardstick: "number", sequence: "ascendant" },
+  next: URL,
   free: true,
   total: 0,
 };

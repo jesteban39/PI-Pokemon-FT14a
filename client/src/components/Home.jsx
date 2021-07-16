@@ -45,13 +45,14 @@ export default function Home() {
         <input type="submit" value="Search" />
       </form>
 
+      <Link to="/add">
+        <button>Add pokemon</button>
+      </Link>
+
       <Filter />
 
       <Sort />
 
-      <Link to="/add">
-        <button>Add pokemon</button>
-      </Link>
       <PagesPokemons />
     </div>
   );

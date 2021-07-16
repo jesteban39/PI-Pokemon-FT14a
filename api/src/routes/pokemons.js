@@ -1,69 +1,123 @@
 const { Router } = require("express");
+const { Pokemon } = require("../db");
+
 const {
   searchPokemon,
   addPokemon,
   verifyName,
 } = require("../actions");
+
+const TOTAL = 40;
+const ROUTE = "http://localhost:3001/pokemons";
+
 const router = Router();
 
-const ROUTE = "http://localhost:3001/pokemons";
-const TOTAL = 40;
+module.exports = router;
 
 //?from=1&limit=12
 router.get("/", (req, res) => {
   let { from, limit, name, id } = req.query;
   from = parseInt(from);
-  if (!from || from < 1) from = 1;
+  if (!from || from < 0) from = 1;
   //if (from > TOTAl) from = TOTAL;
   limit = parseInt(limit);
-  if (!limit || limit < 1 ) limit = 12;
+  if (!limit || limit < 1) limit = 12;
 
-  if(from <= 0) return res.json({
-    count: TOTAL,
-    previous: null,
-    next: req.path + `?from=1&limit=${limit}`,
-    message: "successful search",
-    data: {}
-  });
-
+  if (from <= 0) {
+    return Pokemon.count().then((count) => {
+      return res.json({
+        count: TOTAL + count,
+        previous: null,
+        next: req.path + `?from=1&limit=${limit}`,
+        message: "successful search",
+        data: {},
+      });
+    });
+  }
   let pokemonsP = [];
   let i = from;
   for (; i < from + limit && i <= TOTAL; i++) {
     pokemonsP.push(
       searchPokemon(i).then((pokemon) => {
-        const { id, name, img, types } = pokemon;
-        return { id, name, img, types };
+        const { id, name, img, types, stats } = pokemon;
+        return { id, name, img, types, force: stats.force };
       })
     );
   }
-  Promise.all(pokemonsP)
+
+  let total = 0;
+  Pokemon.count()
+    .then((count) => count)
+    .then((count) => {
+      total = count;
+      //if (i > TOTAL) from += 3001;
+      if (
+        (i > TOTAL && i <= from + limit) ||
+        (i > 3000 && i <= total + 3000)
+      ) {
+        //from += 3001;
+        console.log("i ", i);
+        let j;
+        if (from === TOTAL + 1) throw Error("no machets");
+        if (i === TOTAL + 1) j = 3000 + 1;
+        else if (i > 3000) j = i;
+        else throw Error("no machets");
+        
+
+        console.log("j ", j);
+
+        for (
+          ;
+          (i < from + limit || j < from + limit) && j <= total + 3000;
+          j++, i++
+        ) {
+          pokemonsP.push(
+            searchPokemon(j).then((pokemon) => {
+              const { id, name, img, types, stats } = pokemon;
+              return { id, name, img, types, force: stats.force };
+            })
+          );
+        }
+        i = j;
+      }
+      return Promise.all(pokemonsP);
+    })
     .then((pokemons) => {
+      let next = null;
+      console.log(" null i: ", i);
+
+      if (
+        (i <= TOTAL && i <= TOTAL + total) ||
+        (i > 3000 && i < total + 3000)
+      ) {
+        next = ROUTE + `?from=${i}&limit=${limit}`;
+      }
       return res.json({
-        count: TOTAL,
+        count: TOTAL + total,
         previous:
           from > 1 ? ROUTE + `?from=${from}&limit=${limit}` : null,
-        next: i <= TOTAL ? ROUTE + `?from=${i}&limit=${limit}` : null,
+        next,
         message: "successful search",
         data: pokemons,
       });
     })
     .catch((error) => {
       console.error(error);
-      return res.status(500).json({
+      return res.status(404).json({
         mesages: "uups!",
-        error: error,
+        data: [],
       });
     });
 });
 
 router.get("/:id", (req, res) => {
   let { id } = req.params;
-  id = parseInt(id);
+  /*  id = parseInt(id);
   if (!id)
     return res.status(404).json({
       message: "id should be a number",
       data: {},
-    });
+    }); */
 
   return searchPokemon(id)
     .then((pokemon) => {
@@ -110,7 +164,6 @@ router.post("/", (req, res) => {
     });
 });
 
-module.exports = router;
 /* 
 let { name } = req.query;
   if (name) {
