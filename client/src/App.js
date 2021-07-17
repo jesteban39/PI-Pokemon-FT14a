@@ -8,6 +8,7 @@ import {
   PokemonDetails,
   AddPokemon,
 } from "./components";
+
 import "./App.css";
 
 let state = null;

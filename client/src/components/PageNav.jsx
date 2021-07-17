@@ -1,8 +1,11 @@
+import "./styles/nav.css";
+
 export default function (props) {
   const { totalPages, value, onChange } = props;
   return (
-    <nav aria-label="Countries Pagination">
+    <nav className="nav">
       <button
+        className="item-nav"
         onClick={() => {
           onChange(1);
         }}
@@ -10,21 +13,24 @@ export default function (props) {
         {"1"}
       </button>
       <button
+        className="item-nav"
         onClick={() => {
-          if(value > 1) onChange(value - 1);
+          if (value > 1) onChange(value - 1);
         }}
       >
         {"<<"}
       </button>
-      <button>{value}</button>
+      <button className="item-nav">{value}</button>
       <button
+        className="item-nav"
         onClick={() => {
-          if(value < totalPages) onChange(value + 1);
+          if (value < totalPages) onChange(value + 1);
         }}
       >
         {">>"}
       </button>
       <button
+        className="item-nav"
         onClick={() => {
           onChange(totalPages);
         }}

@@ -1,0 +1,7 @@
+.filter, .sort{
+  display: flex;
+  align-items: center;
+}
+.select{
+  margin: 2px;
+}

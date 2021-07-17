@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import "./styles/filter.css";
 import {
   STAT_NAMES,
   DEFAUL_IMG,
@@ -29,14 +30,17 @@ export default function () {
     dispatch({ type: "UPDATE_PAGES" });
   }
   return (
-    <div>
-      <label>Filter</label>
+    <div className="filter">
+      <label>{"Filter:"}</label>
+
       <Select
+        cn="select"
         name="origin"
         options={ORIGIN_NAMES}
         onChange={handleInput}
       />
       <Select
+        cn="select"
         name="type"
         options={typeNames}
         onChange={handleInput}

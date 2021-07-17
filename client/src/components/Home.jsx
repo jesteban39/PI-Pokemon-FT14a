@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
+import { fillTypes, fillAll } from "../actions";
+import { Link } from "react-router-dom";
+import "./styles/home.css";
 import {
   STAT_NAMES,
   DEFAUL_IMG,
@@ -12,8 +14,6 @@ import {
   Sort,
   PagesPokemons,
 } from "./index";
-import { fillTypes, fillAll } from "../actions";
-import { Link } from "react-router-dom";
 
 export default function Home() {
   const [name, setName] = useState("");
@@ -34,25 +34,24 @@ export default function Home() {
 
   return (
     <div className="home">
-      <form onSubmit={handleSearch}>
-        Search
-        <label>Name:</label>
-        <input
-          placeholder="Search pokemon"
-          onChange={handleName}
-          value={name}
-        />
-        <input type="submit" value="Search" />
-      </form>
+      <section className="home-menu">
+        <form onSubmit={handleSearch}>
+          <input
+            placeholder="Pokemon Name"
+            onChange={handleName}
+            value={name}
+          />
+          <input type="submit" value="Search" />
+        </form>
 
-      <Link to="/add">
-        <button>Add pokemon</button>
-      </Link>
+        <Link to="/add">
+          <button>Add pokemon</button>
+        </Link>
 
-      <Filter />
+        <Filter />
 
-      <Sort />
-
+        <Sort />
+      </section>
       <PagesPokemons />
     </div>
   );

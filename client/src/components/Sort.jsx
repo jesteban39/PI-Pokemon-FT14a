@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import "./styles/filter.css";
 import {
   STAT_NAMES,
   DEFAUL_IMG,
@@ -23,18 +24,20 @@ export default function () {
     dispatch({ type: "UPDATE_PAGES" });
   }
   return (
-    <div>
-      <label>Sort</label>
+    <div className="sort">
+      <label>{" Sort: "}</label>
 
       <Select
+        cn="select"
         name="sequence"
         options={["ascendant", "descent"]}
         onChange={handleInput}
       />
 
       <Select
+        cn="select"
         name="yardstick"
-        options={["number", "name",...STAT_NAMES]}
+        options={["number", "name", ...STAT_NAMES]}
         onChange={handleInput}
       />
     </div>

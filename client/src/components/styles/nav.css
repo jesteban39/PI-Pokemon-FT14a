@@ -1,0 +1,18 @@
+
+
+
+.nav {  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  height: 40px;
+  width: 320px;
+  padding: 3px;
+}
+.item-nav{
+  height: 100%;
+  width: 20%;
+  background-color: rgba(121, 255, 255);
+
+}

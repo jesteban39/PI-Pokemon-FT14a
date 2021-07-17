@@ -1,7 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { PageNav } from "./index";
-import { udatePages, fillTypes, getDetails, fillAll } from "../actions";
+import Pagination from "react-paginate";
+import "./styles/pages.css";
+import {
+  udatePages,
+  fillTypes,
+  getDetails,
+  fillAll,
+} from "../actions";
 import { Link } from "react-router-dom";
 
 export default function Pagespages() {
@@ -16,40 +23,55 @@ export default function Pagespages() {
     dispatch(getDetails(id));
   }
 
-  function handlePage(value) {
-    dispatch({ type: "CURRETN_PAGE", payload: value });
+  function handlePage(event) {
+    dispatch({ type: "CURRETN_PAGE", payload: event});
   }
 
   return (
-    <div>
+    <div className="pages">
+      <section className="pokemons">
+        {pages[currentPage - 1].map((pokemon) => (
+          <div className="pokemon" key={pokemon.id}>
+            <Link
+              onClick={handleDetail}
+              to={`/pokemon/:${pokemon.id}`}
+            >
+              <img
+                className="pokemon-img"
+                name={pokemon.id}
+                src={pokemon.img}
+                alt="img"
+              />
+            </Link>
+
+            <div className="pokemon-info">
+              <div className="name-id">
+                <h4 className="name">{`${pokemon.name}`}</h4>
+                <h5 className="id">{`No. ${pokemon.id}`}</h5>
+              </div>
+              <div className="types">
+                {pokemon.types.map((type) => (
+                  <label
+                    className="type"
+                    key={type}
+                  >{`  ${type}  `}</label>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </section>
+      {/* <Pagination
+      containerClassName="nav"
+        pageCount={pages.length}
+        onPageChange={}
+        
+      /> */}
       <PageNav
         totalPages={pages.length}
         value={currentPage}
         onChange={handlePage}
       />
-
-      <span >40 pages Pokemons</span>
-
-      {pages[currentPage - 1].map((pokemon) => (
-        <div key={pokemon.id}>
-          <Link onClick={handleDetail} to={`/pokemon/:${pokemon.id}`}>
-            <img
-              name={pokemon.id}
-              width="120"
-              height="150"
-              src={pokemon.img}
-              alt="img"
-            />
-          </Link>
-
-          <div>
-            <label>{pokemon.name}</label>
-            {pokemon.types.map((type) => (
-              <label key={type}>{`  ${type}  `}</label>
-            ))}
-          </div>
-        </div>
-      ))}
     </div>
   );
 }
