@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { fillTypes, sentNewPokemon } from "../actions";
-import { STAT_NAMES, DEFAUL_IMG } from "./index";
+import { STAT_NAMES, DEFAUL_IMG, Select } from "./index";
 import { useDispatch, useSelector } from "react-redux";
-import Select from "./Select";
-
+import "./styles/add.css";
 export default function AddPokemon() {
   const dispatch = useDispatch();
 
@@ -62,8 +61,8 @@ export default function AddPokemon() {
 
     if (
       value !== "Select types" &&
-      !name &&
-      types.length < 6 &&
+      value !== "on" &&
+      types.length < 4 &&
       !types.includes(value)
     ) {
       setFinish((state) => {
@@ -71,13 +70,14 @@ export default function AddPokemon() {
         return { ...state };
       });
       return setTypes((state) => [...state, value]);
-    } else if (!checked && name && types.length > 1) {
+    } else if (!checked && types.length > 1) {
       setTypes((state) => state.filter((type) => type !== name));
     }
   }
 
   function handleStats(event) {
-    const { name, value } = event.target;
+    let { name, value } = event.target;
+    if (value >= 100) value = 99;
     setStats((state) => {
       state[name] = value;
       return { ...state };
@@ -108,83 +108,96 @@ export default function AddPokemon() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h3>Add a new Pokemon</h3>
-      <div>
-        <div>
-          <label>Name :</label>
-          <input value={name} onChange={handleName} />
-        </div>
-        <div>
-          <label>Height: {height} cm</label>
-          <input
-            type="number"
-            value={height}
-            onChange={handleHeight}
-          />
-        </div>
+    <div className="container-add">
+      <form className="form-add" onSubmit={handleSubmit}>
+        <h3>Add a new Pokemon</h3>
+        <div className="container-inputs">
+          <div className="add-inputs">
+            <div className="container-input">
+              <label>Name :</label>
+              <input value={name} onChange={handleName} />
+            </div>
+            <div className="container-input">
+              <label>Height:</label>
+              <input
+                className="inputs-num"
+                type="number"
+                value={height}
+                onChange={handleHeight}
+              />
+              <label>cm</label>
+            </div>
 
-        <div>
-          <label>Weight: {weight} kg</label>
-          <input
-            type="number"
-            value={weight}
-            onChange={handleWeight}
-          />
-        </div>
+            <div className="container-input">
+              <label>Weight:</label>
+              <input
+                className="inputs-num"
+                type="number"
+                value={weight}
+                onChange={handleWeight}
+              />
+              <label>kg</label>
+            </div>
+            <div className="container-input">
+              <label>Image :</label>
+              <input type="url" value={img} onChange={handleImg} />
+            </div>
+          </div>
 
-        <label>Image :</label>
-        <input type="url" value={img} onChange={handleImg} />
-      </div>
-
-      <div>
-        <label>Types:{types}</label>
-        <Select
-          options={grades}
-          name="Types"
-          onChange={handleTypes}
-        />
-        {types.map((type) => (
-          <div key={type}>
-            <label>{type}</label>
-            <input
-              checked={true}
-              name={type}
-              type="checkbox"
+          <div className="add-inputs">
+            <label>Types:</label>
+            <Select
+              options={grades}
+              name="types"
               onChange={handleTypes}
             />
+            <div>
+              {types.map((type) => (
+                <div key={type}>
+                  <label>{type}</label>
+                  <input
+                    checked={true}
+                    name={type}
+                    type="checkbox"
+                    onChange={handleTypes}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
-      </div>
-      <div>
-        {STAT_NAMES.map((stat) => (
-          <div key={stat}>
-            <label>
-              {stat}: {stats[stat]}
-            </label>
-            <input
-              min="1"
-              max="199"
-              name={stat}
-              type="range"
-              value={stats[stat] || 1}
-              onChange={handleStats}
-            />
+          <div className="add-inputs">
+            {STAT_NAMES.map((stat) => (
+              <div key={stat}>
+                <label>{stat}:</label>
+                <input
+                  min="1"
+                  max="199"
+                  name={stat}
+                  type="range"
+                  value={stats[stat] || 1}
+                  onChange={handleStats}
+                />
+                <label>{stats[stat]}%</label>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <input
-        type="submit"
-        value="Add"
-        onSubmit={handleSubmit}
-        disabled={
-          Object.keys(finish).length < 5 ||
-          Object.values(finish).includes(false)
-        }
-      />
-      <Link to="/home">
-        <button>Cancel</button>
-      </Link>
-    </form>
+        </div>
+        <div className="buttons">
+          <input
+            className="button-add"
+            type="submit"
+            value="Add"
+            onSubmit={handleSubmit}
+            disabled={
+              Object.keys(finish).length < 5 ||
+              Object.values(finish).includes(false)
+            }
+          />
+          <Link to="/home">
+            <button className="button-add">Cancel</button>
+          </Link>
+        </div>
+      </form>
+    </div>
   );
 }

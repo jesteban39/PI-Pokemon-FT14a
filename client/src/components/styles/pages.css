@@ -5,7 +5,7 @@
   align-content: flex-end;
 }
 
-.pokemons {
+.container-pokemons {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -15,7 +15,7 @@
   margin-top: 110px;
 }
 
-.pokemon {
+.pokemons {
   display: flex;
   flex-direction: column;
   background-color: rgba(121, 255, 255, 0.801);
@@ -48,6 +48,7 @@
 
 .types{
   display: flex;
+  justify-content: center;
 }
 .type{
   box-sizing: border-box;

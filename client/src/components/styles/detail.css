@@ -1,0 +1,53 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  background-image: url(images/Fondo_pokemons2.jpg);
+  height: 566px;
+}
+.img {
+  width: 35%;
+}
+.pokemon {
+  display: flex;
+  box-sizing: border-box;
+  margin-left: 5%;
+  margin-right: 5%;
+  border: rgb(3, 156, 28) 6px double;
+  border-radius: 20px;
+  background-color: rgba(121, 255, 255, 0.8);
+}
+.details {
+  display: flex;
+  width: 50%;
+  align-items: center;
+  justify-content: space-around;
+}
+.info-details {
+  height: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.container-stats {
+  height: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.container-types {
+  display: flex;
+}
+.stats {
+  display: flex;
+  flex-direction: column;
+}
+
+.button-home {
+  background-color: rgba(121, 255, 255);
+  border: rgb(3, 156, 28) 2px solid;
+  border-radius: 10px;
+  margin: 6px;
+  width: 120px;
+  height: 40px;
+}

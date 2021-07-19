@@ -9,17 +9,14 @@ const {
 
 const TOTAL = 40;
 const ROUTE = "http://localhost:3001/pokemons";
-
 const router = Router();
 
 module.exports = router;
 
-//?from=1&limit=12
 router.get("/", (req, res) => {
   let { from, limit, name, id } = req.query;
   from = parseInt(from);
   if (!from || from < 0) from = 1;
-  //if (from > TOTAl) from = TOTAL;
   limit = parseInt(limit);
   if (!limit || limit < 1) limit = 12;
 
@@ -28,12 +25,13 @@ router.get("/", (req, res) => {
       return res.json({
         count: TOTAL + count,
         previous: null,
-        next: req.path + `?from=1&limit=${limit}`,
+        next: ROUTE + `?from=1&limit=${limit}`,
         message: "successful search",
         data: {},
       });
     });
   }
+
   let pokemonsP = [];
   let i = from;
   for (; i < from + limit && i <= TOTAL; i++) {
@@ -55,16 +53,11 @@ router.get("/", (req, res) => {
         (i > TOTAL && i <= from + limit) ||
         (i > 3000 && i <= total + 3000)
       ) {
-        //from += 3001;
-        console.log("i ", i);
         let j;
         if (from === TOTAL + 1) throw Error("no machets");
         if (i === TOTAL + 1) j = 3000 + 1;
         else if (i > 3000) j = i;
-        else throw Error("no machets");
-        
-
-        console.log("j ", j);
+        else throw Error("no machets");        
 
         for (
           ;
@@ -84,7 +77,6 @@ router.get("/", (req, res) => {
     })
     .then((pokemons) => {
       let next = null;
-      console.log(" null i: ", i);
 
       if (
         (i <= TOTAL && i <= TOTAL + total) ||
@@ -95,14 +87,13 @@ router.get("/", (req, res) => {
       return res.json({
         count: TOTAL + total,
         previous:
-          from > 1 ? ROUTE + `?from=${from}&limit=${limit}` : null,
+          from > 1 ? TOTAL + `?from=${from}&limit=${limit}` : null,
         next,
         message: "successful search",
         data: pokemons,
       });
     })
     .catch((error) => {
-      console.error(error);
       return res.status(404).json({
         mesages: "uups!",
         data: [],

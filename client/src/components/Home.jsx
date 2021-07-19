@@ -41,11 +41,15 @@ export default function Home() {
             onChange={handleName}
             value={name}
           />
-          <input type="submit" value="Search" />
+          <input
+            className="button-add-home"
+            type="submit"
+            value="Search"
+          />
         </form>
 
         <Link to="/add">
-          <button>Add pokemon</button>
+          <button className="button-add-home">Add pokemon</button>
         </Link>
 
         <Filter />

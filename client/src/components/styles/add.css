@@ -1,0 +1,46 @@
+.container-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url(images/Fondo_pokemons2.jpg);
+  height: 565px;
+}
+
+.form-add{
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  height: 95%;
+  
+}
+.inputs-num{
+  width: 40px;
+}
+.container-input{
+  display: flex;
+}
+.add-inputs{
+  display: flex;
+  flex-direction: column; 
+  height: 40%;
+  margin: 5%;
+  justify-content: space-around;
+}
+.container-inputs{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 90%;
+  background-color: rgba(121, 255, 255, 0.8);
+  border: rgb(3, 156, 28) 6px double;
+  border-radius: 20px;
+}
+
+.button-add {
+  background-color: rgba(121, 255, 255);
+  border: rgb(3, 156, 28) 2px solid;
+  border-radius: 10px;
+  margin: 10px;
+  width: 120px;
+  height: 35px;
+}

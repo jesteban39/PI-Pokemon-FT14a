@@ -9,8 +9,8 @@
 }
 
 .landingButton {
-  background-color: rgba(121, 255, 255, 0.801);
-  border: rgb(3, 156, 28) 6px double;
+  background-color: rgba(121, 255, 255);
+  border: rgb(3, 156, 28) 6px ;
   border-radius: 20px;
   height: 60px;
   width: 220px;
@@ -19,9 +19,9 @@
 }
 
 .welcome {
-  background-color: rgba(121, 255, 255, 0.801);
+  background-color: rgba(121, 255, 255, 0.8);
   border-radius: 20px;
-  border: rgb(3, 156, 28) 6px double;
+  border: rgb(3, 156, 28) 6px ;
   width: 800px;
   font-family: cursive;
   font-size: large;

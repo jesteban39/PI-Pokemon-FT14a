@@ -5,6 +5,7 @@
   background-image: url(images/Fondo_pokemons2.jpg);
   background-attachment: fixed;
   overflow: scroll;
+  min-height: 566px;
 }
 .home-menu {
   width: 90%;
@@ -20,4 +21,13 @@
   border: rgb(3, 156, 28) 6px double;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
+}
+
+.button-add-home {
+  background-color: rgba(121, 255, 255);
+  border: rgb(3, 156, 28) 2px solid;
+  border-radius: 10px;
+  margin: 6px;
+  width: 120px;
+  height: 25px;
 }

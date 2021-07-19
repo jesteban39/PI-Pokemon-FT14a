@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import "./styles/filter.css";
+import "./styles/select.css";
 import {
   STAT_NAMES,
   DEFAUL_IMG,
@@ -30,7 +30,7 @@ export default function () {
     dispatch({ type: "UPDATE_PAGES" });
   }
   return (
-    <div className="filter">
+    <div className="container-selects">
       <label>{"Filter:"}</label>
 
       <Select

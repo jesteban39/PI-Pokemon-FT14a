@@ -29,9 +29,9 @@ export default function Pagespages() {
 
   return (
     <div className="pages">
-      <section className="pokemons">
+      <section className="container-pokemons">
         {pages[currentPage - 1].map((pokemon) => (
-          <div className="pokemon" key={pokemon.id}>
+          <div className="pokemons" key={pokemon.id}>
             <Link
               onClick={handleDetail}
               to={`/pokemon/:${pokemon.id}`}
