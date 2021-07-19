@@ -34,7 +34,7 @@ export default function Pagespages() {
           <div className="pokemons" key={pokemon.id}>
             <Link
               onClick={handleDetail}
-              to={`/pokemon/:${pokemon.id}`}
+              to={`/pokemon/${pokemon.id}`}
             >
               <img
                 className="pokemon-img"
@@ -46,7 +46,7 @@ export default function Pagespages() {
 
             <div className="pokemon-info">
               <div className="name-id">
-                <h4 className="name">{`${pokemon.name}`}</h4>
+                <h4 className="name">{`${pokemon.name.replace("-"," ")}`}</h4>
                 <h5 className="id">{`No. ${pokemon.id}`}</h5>
               </div>
               <div className="types">

@@ -22,20 +22,20 @@ export const POKEMON_PENDING = {
 export const PAGE_LIMIT = 12;
 
 function compare({ yardstick, sequence }) {
-  if(yardstick === "number") yardstick = "id";
-  if(sequence === "ascendant"){
+  if (yardstick === "number") yardstick = "id";
+  if (sequence === "ascendant") {
     return (pokemonA, pokemonB) => {
-      if(pokemonA[yardstick] > pokemonB[yardstick] ) return 1;
-      if(pokemonA[yardstick] < pokemonB[yardstick] ) return -1;
+      if (pokemonA[yardstick] > pokemonB[yardstick]) return 1;
+      if (pokemonA[yardstick] < pokemonB[yardstick]) return -1;
       return 0;
-    };    
+    };
   }
-  if(sequence === "descent"){
+  if (sequence === "descent") {
     return (pokemonA, pokemonB) => {
-      if(pokemonA[yardstick] > pokemonB[yardstick] ) return -1;
-      if(pokemonA[yardstick] < pokemonB[yardstick] ) return 1;
+      if (pokemonA[yardstick] > pokemonB[yardstick]) return -1;
+      if (pokemonA[yardstick] < pokemonB[yardstick]) return 1;
       return 0;
-    };    
+    };
   }
 
   return (pokemonA, pokemonB) => {
@@ -93,11 +93,13 @@ export default function rootReducer(state = initialState, action) {
     case "FILTER":
       //console.log("filter state: ",action.payload)
       return { ...state, currentPage: 1, filter: action.payload };
+
     case UPDATE_PAGES:
       if (state.pokemons.length > 0) {
         const { type, origin } = state.filter;
         //console.log("filter: ",type, origin)
         let pages = [[]];
+        let name;
         let min = 0;
         let max = 3999;
         let countPges = 0;
@@ -114,7 +116,10 @@ export default function rootReducer(state = initialState, action) {
           if (
             pokemon.id > min &&
             pokemon.id < max &&
-            (!type || type === "all" || pokemon.types.includes(type))
+            (!type ||
+              type === "all" ||
+              pokemon.types.includes(type)) &&
+            (!name || pokemon.name === name)
           ) {
             pages[countPges].push(pokemon);
             count++;
@@ -131,6 +136,7 @@ export default function rootReducer(state = initialState, action) {
         pokemons: [...state.pokemons, ...action.payload],
       };
     case GET_DETAILS:
+      if (!action.payload) return state;
       return { ...state, pokemonDetails: action.payload };
     case FILL_TYPES:
       return { ...state, typeNames: action.payload.sort() };

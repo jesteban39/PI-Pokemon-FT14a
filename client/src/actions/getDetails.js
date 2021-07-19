@@ -1,18 +1,27 @@
 import { URL, GET_DETAILS } from "./index";
 
+let open = true;
+
 export default function getDetails(id) {
   return function (dispatch) {
-    return fetch(URL + `/${id}`)
-      .then((response) => {
-        //console.log("res: ", response);
-        return response.json();
-      })
-      .then((json) => {
-        //console.log("json: ",json);
-        dispatch({ type: GET_DETAILS, payload: json.data });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    if (open) {
+      open = false;
+      return fetch(URL + `/${id}`)
+        .then((response) => {
+          //console.log("res: ", response);
+          return response.json();
+        })
+        .then((json) => {
+          //console.log("json: ",json);
+          if(!json.data) throw Error("no machets")
+          dispatch({ type: GET_DETAILS, payload: json.data });
+        })
+        .catch((error) => {
+          dispatch({ type: GET_DETAILS, payload: {}});
+          console.error(error);
+        }).finally(() => {
+          open = true;
+        })
+    }
   };
 }

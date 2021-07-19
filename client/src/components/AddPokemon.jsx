@@ -85,8 +85,8 @@ export default function AddPokemon() {
   }
 
   function handleSubmit(event) {
-    console.log("res: ", "handle");
-    event.preventDefault();
+    //console.log("res: ", "handle");
+    //event.preventDefault();
     let newPokemon = {
       name: name.trim().replace(/[\s]+/g, "-"),
       height: Math.floor(height / 10) || 1,
@@ -183,16 +183,25 @@ export default function AddPokemon() {
           </div>
         </div>
         <div className="buttons">
-          <input
-            className="button-add"
-            type="submit"
-            value="Add"
-            onSubmit={handleSubmit}
-            disabled={
-              Object.keys(finish).length < 5 ||
-              Object.values(finish).includes(false)
-            }
-          />
+          {Object.keys(finish).length < 5 ||
+          Object.values(finish).includes(false) ? (
+            <input
+              className="button-add"
+              type="submit"
+              value="Add"
+              disabled={true}
+            />
+          ) : (
+            <Link to="/home" onClick={handleSubmit}>
+              <input
+                className="button-add"
+                type="submit"
+                value="Add"
+                
+              />
+            </Link>
+          )}
+
           <Link to="/home">
             <button className="button-add">Cancel</button>
           </Link>

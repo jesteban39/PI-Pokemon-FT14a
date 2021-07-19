@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fillTypes, fillAll } from "../actions";
+import { fillTypes, getDetails, fillAll } from "../actions";
 import { Link } from "react-router-dom";
 import "./styles/home.css";
 import {
@@ -22,30 +22,31 @@ export default function Home() {
   //if (typeNames.length <= 1) dispatch(fillTypes());
 
   function handleName(event) {
-    const { value } = event.target;
+    let { value } = event.target;
+    value = value.toLowerCase().replace(/[^a-z\s]/g, "");
     setName(value);
   }
 
   function handleSearch(event) {
-    event.preventDefault();
-    const { value } = event.target;
-    //dispatch(value);
+    dispatch(getDetails(name));
   }
 
   return (
     <div className="home">
       <section className="home-menu">
-        <form onSubmit={handleSearch}>
+        <form >
           <input
             placeholder="Pokemon Name"
             onChange={handleName}
             value={name}
           />
-          <input
-            className="button-add-home"
-            type="submit"
-            value="Search"
-          />
+          <Link onClick={handleSearch} to={`/pokemon/${name}`}>
+            <input
+              className="button-add-home"
+              type="submit"
+              value="Search"
+            />
+          </Link>
         </form>
 
         <Link to="/add">

@@ -25,9 +25,8 @@ export default function App() {
       <Route path="/home" exact>
         <Home />
       </Route>
-      <Route path="/pokemon/:id" exact>
-        <PokemonDetails />
-      </Route>
+      <Route path="/pokemon/:id" exact component={PokemonDetails}/>
+        
       <Route path="/add/" exact>
         <AddPokemon />
       </Route>

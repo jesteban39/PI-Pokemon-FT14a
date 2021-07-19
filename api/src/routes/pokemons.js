@@ -57,8 +57,7 @@ router.get("/", (req, res) => {
         if (from === TOTAL + 1) throw Error("no machets");
         if (i === TOTAL + 1) j = 3000 + 1;
         else if (i > 3000) j = i;
-        else throw Error("no machets");        
-
+        else throw Error("no machets");
         for (
           ;
           (i < from + limit || j < from + limit) && j <= total + 3000;
@@ -80,7 +79,7 @@ router.get("/", (req, res) => {
 
       if (
         (i <= TOTAL && i <= TOTAL + total) ||
-        (i > 3000 && i < total + 3000)
+        (i > 3000 && i <= total + 3000)
       ) {
         next = ROUTE + `?from=${i}&limit=${limit}`;
       }
@@ -101,16 +100,9 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/:id", (req, res) => {
-  let { id } = req.params;
-  /*  id = parseInt(id);
-  if (!id)
-    return res.status(404).json({
-      message: "id should be a number",
-      data: {},
-    }); */
-
-  return searchPokemon(id)
+router.get("/:payload", (req, res) => {
+  let { payload } = req.params;
+  return searchPokemon(payload)
     .then((pokemon) => {
       return res.json({
         message: "successful search",
@@ -120,7 +112,7 @@ router.get("/:id", (req, res) => {
     .catch((error) => {
       console.log(error);
       return res.status(404).json({
-        message: `No matches found for ${id}`,
+        message: `No matches found for ${payload}`,
         data: {},
       });
     });

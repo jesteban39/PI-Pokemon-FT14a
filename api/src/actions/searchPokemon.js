@@ -11,7 +11,6 @@ const TOTAL = 40;
  */
 module.exports = searchPokemon = (payload) => {
   let id = parseInt(payload);
-
   if (id && id > 0 && id <= TOTAL) {
     return searchInApi(id).then((pokemon) => pokemon);
   }
