@@ -1,8 +1,7 @@
-import { URL, SENT_NEW_POKEMON } from "./index";
+import { URL,UPDATE_PAGES,FILL_NEXT } from "./index";
 
 export default function sentNewPokemon(newPokemon) {
   return function (dispatch) {
-    console.log("res: ", "dispatch");
     return fetch(URL, {
       method: "POST",
       headers: {
@@ -14,11 +13,12 @@ export default function sentNewPokemon(newPokemon) {
         if (response.ok) return response.json();
       })
       .then((json) => {
-        console.log("res: ", json);
+        dispatch({ type: FILL_NEXT, payload: [json.data] });
+        dispatch({ type: UPDATE_PAGES });
         alert("sessecifi add", json.data.name);
       })
       .catch((error) => {
-        console.log("res: ", "error");
+        alert("fallid add");
         console.error(error);
       });
   };

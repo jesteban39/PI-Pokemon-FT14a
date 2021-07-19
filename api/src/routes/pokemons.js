@@ -127,15 +127,12 @@ router.post("/", (req, res) => {
       data: {},
     });
   req.body.name = name;
-  console.log("pre addPokemon");
   return addPokemon(req.body)
     .then((newPokemon) => {
+      const { id, name, img, types, force } = newPokemon;     
       return res.json({
         message: "successful add",
-        data: {
-          id: newPokemon.id + 3000,
-          name: newPokemon.name,
-        },
+        data: { id, name, img, types, force },
       });
     })
     .catch((error) => {
