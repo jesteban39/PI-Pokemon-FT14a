@@ -4,15 +4,6 @@ const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const routes = require("./routes");
 
-const {fillGrades} = require("./actions");
-fillGrades().then(
-  (message) => {
-    console.log("-Grades-> ", message);
-  },
-  (message) => {
-    console.log("-Grades-> ", message);
-  }
-);
 
 const server = express();
 server.name = "API";

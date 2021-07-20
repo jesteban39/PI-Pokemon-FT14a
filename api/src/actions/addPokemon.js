@@ -32,7 +32,8 @@ module.exports = function addPokemon(pokemon) {
     })
     .then((data) => {
       data = data.dataValues;
-      if(!data) throw Error("not add")
+      if(!data) throw Error("not add")      
+      data.id += 3000;
       data.types = data.grades.map((grade) => grade.dataValues.name);
       return data;
     });

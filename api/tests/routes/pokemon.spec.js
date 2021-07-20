@@ -3,29 +3,29 @@ const { expect } = require("chai");
 
 const session = require("supertest-session");
 const app = require("../../src/app.js");
-const { Pokemon, conn } = require("../../src/db.js");
+const { Pokemon, types, conn } = require("../../src/db.js");
 
 const agent = session(app);
 
 describe("Pokemon routes", () => {
-  const pokemon = {
-    name: "Pikachu",
-  };
   const pokemon1 = {
     id: 1,
     name: "bulbasaur",
     img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
     types: ["grass", "poison"],
+    force: 49,
   };
   const pokemon25 = {
     id: 25,
     name: "pikachu",
-    life: 35,
-    force: 55,
-    defense: 40,
-    speed: 90,
     height: 4,
     weight: 60,
+    stats: {
+      life: 35,
+      force: 55,
+      defense: 40,
+      speed: 90,
+    },
     types: ["electric"],
     img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
   };
@@ -34,29 +34,30 @@ describe("Pokemon routes", () => {
       console.error("Unable to connect to the database:", err);
     })
   );
-  beforeEach(() =>
-    Pokemon.sync({ force: true }).then(() => Pokemon.create(pokemon))
-  );
   describe("GET /pokemons", () => {
     it("should get 200", () => agent.get("/pokemons").expect(200));
-    it("respond for a array", () =>
+    it("respond for a array", () => {
       agent.get("/pokemons").then((res) => {
-        expect(Array.isArray(res.body)).to.be.true;
-      }));
+        done();
+        expect(Array.isArray(res.body.data)).to.be.true;
+      });
+    });
+
     it("respond for first pokemon to pokeapi", () =>
       agent.get("/pokemons").then((res) => {
-        expect(res.body[0]).to.be.deep.equal(pokemon1);
+        expect(res.body.data[0]).to.be.deep.equal(pokemon1);
       }));
     it("respond any pokemons", () =>
       agent.get("/pokemons").then((res) => {
-        expect(res.body.length).to.be.equal(12);
+        expect(res.body.data.length).to.be.equal(12);
       }));
-    it("respond for data to pokeapi", () =>
+    it("respond for data to pokeapi", (done) =>
       agent.get("/pokemons").then((res) => {
-        expect(res.body[0].name).to.be.equal("bulbasaur");
-        expect(res.body[1].img.includes("rk/2.png")).to.be.true;
-        expect(res.body[2].img.includes("rk/3.png")).to.be.true;
-        expect(res.body[2].types[1]).to.be.equal("poison");
+        done();
+        expect(res.body.data[0].name).to.be.equal("bulbasaur");
+        expect(res.body.data[1].img.includes("rk/2.png")).to.be.true;
+        expect(res.body.data[2].img.includes("rk/3.png")).to.be.true;
+        expect(res.body.data[2].types[1]).to.be.equal("poison");
       }));
   });
   describe("GET /pokemons/:id", () => {
@@ -72,7 +73,7 @@ describe("Pokemon routes", () => {
         }));
     it("respond for a pokemon of pokeapi", () =>
       agent.get("/pokemons/25").then((res) => {
-        expect(res.body).to.be.deep.equal(pokemon25);
+        expect(res.body.data).to.be.deep.equal(pokemon25);
       }));
   });
 
@@ -88,7 +89,7 @@ describe("Pokemon routes", () => {
         }));
     it("respond for a pokemon of pokeapi", () =>
       agent.get("/pokemons?name=pikachu").then((res) => {
-        expect(res.body).to.be.deep.equal(pokemon25);
+        expect(res.body.data).to.be.deep.equal(pokemon25);
       }));
   });
   describe("POST /pokemons", () => {
@@ -108,7 +109,8 @@ describe("Pokemon routes", () => {
       agent
         .post("/pokemons")
         .send({
-          name: "mi  +{{}+} poke",
+          name: "mi poke",
+          types: ["normal"],
         })
         .expect(200)
         .then((res) => {

@@ -3,13 +3,13 @@ const { Sequelize } = require("sequelize");
 const fs = require("fs");
 const path = require("path");
 const verifyName = require("./actions/verifyName.js");
-const  toNum  = require("./actions/toNum.js");
+const toNum = require("./actions/toNum.js");
 
 const { DB_USER, DB_PASSWORD, DB_HOST } = process.env;
 const modelDefiners = [];
 const basename = path.basename(__filename);
 const sequelize = new Sequelize(
-  `postgres://postgres:password@localhost/pokemon`,
+  `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}`,
   {
     logging: false, // set to console.log to see the raw SQL queries
     native: false, // lets Sequelize know we can use pg-native for ~30% more speed
@@ -50,7 +50,10 @@ const { Pokemon, Grade } = sequelize.models;
 
 Pokemon.beforeCreate((pokemon) => {
   pokemon.name = verifyName(pokemon.name);
-  if (!pokemon.name) throw Error("name is not valid");
+  if (!pokemon.name) throw Error("It requires a valid name");
+  if (!pokemon.img)
+    pokemon.img =
+      "https://www.kindpng.com/picc/m/20-202226_yvr-pokeball-poke-ball-hd-png-download.png";
 
   const stats = [
     "life",

@@ -15,6 +15,29 @@ module.exports = router;
 
 router.get("/", (req, res) => {
   let { from, limit, name, id } = req.query;
+
+  if (name) {
+    name = verifyName(name);
+    if (!name)
+      return res.status(404).json({
+        message: "name in not valid",
+        data: {},
+      });
+    return searchPokemon(name)
+      .then((pokemon) => {
+        return res.json({
+          message: "successful search",
+          data: pokemon,
+        });
+      })
+      .catch(() => {
+        return res.status(404).json({
+          message: `No matches found for ${name}`,
+          data: {},
+        });
+      });
+  }
+
   from = parseInt(from);
   if (!from || from < 0) from = 1;
   limit = parseInt(limit);
@@ -110,7 +133,6 @@ router.get("/:payload", (req, res) => {
       });
     })
     .catch((error) => {
-      console.log(error);
       return res.status(404).json({
         message: `No matches found for ${payload}`,
         data: {},
@@ -129,14 +151,13 @@ router.post("/", (req, res) => {
   req.body.name = name;
   return addPokemon(req.body)
     .then((newPokemon) => {
-      const { id, name, img, types, force } = newPokemon;     
+      const { id, name, img, types, force } = newPokemon;
       return res.json({
         message: "successful add",
         data: { id, name, img, types, force },
       });
     })
     .catch((error) => {
-      console.log(error);
       return res.status(500).json({
         message: "uuuups!!!",
         data: {},
@@ -146,28 +167,5 @@ router.post("/", (req, res) => {
 
 /* 
 let { name } = req.query;
-  if (name) {
-    name = verifyName(name);
-    console.log("id-> ", name);
-
-    if (!name)
-      return res.status(404).json({
-        message: "name in not valid",
-        data: {},
-      });
-    return searchPokemon(name)
-      .then((pokemon) => {
-        return res.json({
-          message: "successful search",
-          data: pokemon,
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-        return res.status(404).json({
-          message: `No matches found for ${name}`,
-          data: {},
-        });
-      });
-  }
+  
  */

@@ -3,8 +3,9 @@ const axios = require("axios");
 const URL_TYPES = "https://pokeapi.co/api/v2/type/";
 
 module.exports = function fillGrades() {
-  return Grade.findAll().then((grades) => {
-    if (grades.length > 0) return "preloaded";
+  
+  return Grade.count().then((count) => {
+    if (count > 0) return "preloaded";
     return axios.get(URL_TYPES).then((res) => {
       let types = res.data.results;
       return types.map((type) => {
