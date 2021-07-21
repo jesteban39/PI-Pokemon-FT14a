@@ -2,15 +2,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { fillTypes, sentNewPokemon } from "../actions";
 import { STAT_NAMES, DEFAUL_IMG, Select } from "./index";
-import { useDispatch, useSelector } from "react-redux";
-import "./styles/add.css";
-export default function AddPokemon() {
-  const dispatch = useDispatch();
+import { connect } from "react-redux";
 
-  const grades = [
-    "Select types",
-    ...useSelector((state) => state.typeNames),
-  ];
+import "./styles/add.css";
+function AddPokemon(props) {
+  const { dispatch, grades } = props;
 
   if (grades.length <= 1) dispatch(fillTypes());
 
@@ -85,17 +81,15 @@ export default function AddPokemon() {
   }
 
   function handleSubmit(event) {
-    //console.log("res: ", "handle");
-    //event.preventDefault();
     let newPokemon = {
       name: name.trim().replace(/[\s]+/g, "-"),
-      height: Math.floor(height / 10) || 1,
+      height: Math.floor(height) || 10,
       weight: Math.floor(weight * 10) || 1,
       img: img || DEFAUL_IMG,
       lafe: stats.life || 1,
-      force: stats.force,
-      defense: stats.defense,
-      speed: stats.speed,
+      force: stats.force|| 1,
+      defense: stats.defense|| 1,
+      speed: stats.speed|| 1,
       types,
     };
     if (
@@ -109,7 +103,7 @@ export default function AddPokemon() {
 
   return (
     <div className="container-add">
-      <form className="form-add" onSubmit={handleSubmit}>
+      <form className="form-add " onSubmit={handleSubmit}>
         <h3>Add a new Pokemon</h3>
         <div className="container-inputs">
           <div className="add-inputs">
@@ -197,7 +191,6 @@ export default function AddPokemon() {
                 className="button-add"
                 type="submit"
                 value="Add"
-                
               />
             </Link>
           )}
@@ -210,3 +203,16 @@ export default function AddPokemon() {
     </div>
   );
 }
+
+const mapStateToProps = (state) => {
+  return {
+    grades: state.typeNames,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return { dispatch };
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AddPokemon);

@@ -1,13 +1,4 @@
-import {
-  URL,
-  UPDATE,
-  UPDATE_PAGES,
-  FILL_NEXT,
-  FILL_ALL,
-  RESET,
-  ADD_PAGE,
-  fillTypes,
-} from "./index";
+import { UPDATE, UPDATE_PAGES, FILL_NEXT } from "./index";
 
 export default function fillAll(state) {
   return function (dispatch) {
@@ -41,54 +32,6 @@ export default function fillAll(state) {
           });
           console.error(error);
         });
-    }
-  };
-}
-
-function _fillAll(state) {
-  return function (dispatch) {
-    const { free, total, pokemons } = state;
-    if (free === true && total === 0) {
-      dispatch({
-        type: UPDATE,
-        payload: { total: 1, free: false },
-      });
-      return fetch(`${URL}?from=0&limit=1`)
-        .then((response) => {
-          if (response.ok) return response.json();
-          else throw new Error(`fetch 0 failed`);
-        })
-        .then((json) => {
-          //if (total < json.count) {
-          dispatch({
-            type: UPDATE,
-            payload: { total: json.count || total, free: false },
-          });
-          let next = fetch(`${URL}?from=1&limit=12`);
-          for (let i = 1; i <= json.count / 12 + 1; i++) {
-            next = next
-              .then((response) => {
-                if (response && response.ok) return response.json();
-                else throw new Error(`fetch ${next} failed`);
-              })
-              .then((json) => {
-                dispatch({ type: FILL_NEXT, payload: json.data });
-                dispatch({ type: UPDATE_PAGES });
-                if (json.next) return fetch(json.next);
-                //else throw Error('finally')
-              });
-          }
-          return next;
-        })
-        .catch((error) => {
-          console.error(error);
-        })
-        .finally(() =>
-          dispatch({
-            type: UPDATE,
-            payload: { total, free: true },
-          })
-        );
     }
   };
 }

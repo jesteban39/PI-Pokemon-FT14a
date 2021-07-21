@@ -3,12 +3,10 @@ import {
   UPDATE_PAGES,
   FILL_ALL,
   FILL_NEXT,
-  RESET,
   ADD_PAGE,
   GET_DETAILS,
   FILL_TYPES,
   URL,
-  SENT_NEW_POKEMON,
 } from "../actions";
 export const POKEMON_PENDING = {
   id: 0,
@@ -43,7 +41,7 @@ function compare({ yardstick, sequence }) {
   };
 }
 
-const initialState = {
+export const initialState = {
   pokemons: [],
   typeNames: [],
   pages: [[POKEMON_PENDING]],

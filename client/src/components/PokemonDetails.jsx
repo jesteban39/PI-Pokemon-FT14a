@@ -1,18 +1,16 @@
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import {POKEMON_PENDING} from "../reducers";
-import { fillTypes, getDetails, fillAll } from "../actions";
+import { POKEMON_PENDING } from "../reducers";
+import { getDetails } from "../actions";
 import { STAT_NAMES } from "./index";
 import "./styles/detail.css";
 
 export default function PokemonDetails(props) {
   const dispatch = useDispatch();
-  //console.log("oar: ",props.match.params.id)
   dispatch(getDetails(props.match.params.id));
-  let pokemon = useSelector((state) => state.pokemonDetails)
-  if(!pokemon.name) pokemon = POKEMON_PENDING;
-  console.log("pok: ",pokemon)
+  let pokemon = useSelector((state) => state.pokemonDetails);
+  if (!pokemon.name) pokemon = POKEMON_PENDING;
   return (
     <div className="container">
       <h1>{"Pokemon Detail"}</h1>
@@ -26,9 +24,7 @@ export default function PokemonDetails(props) {
             <label>{` Weight: ${pokemon.weight / 10} kg`}</label>
             <div className="container-types">
               <label className="types">{` Types: `}</label>
-              <div>
-                
-              </div>
+              <div></div>
             </div>
           </div>
 

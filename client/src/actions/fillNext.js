@@ -1,4 +1,4 @@
-import { URL, FILL_ALL, FILL_NEXT } from "./index";
+import { URL, FILL_NEXT } from "./index";
 let cont = 0;
 export default function fillNext(next) {
   return function (dispatch) {

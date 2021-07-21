@@ -1,9 +1,9 @@
-import { URL, FILL_TYPES, UPDATE } from "./index";
+import { FILL_TYPES } from "./index";
 let cont = 0;
 export default function fillTypes(state) {
   cont++
   return function (dispatch) {
-    const { next, free, typeNames } = state;
+    const {free, typeNames } = state;
     if (cont === 1 && free && typeNames.length === 0) {
       
       return fetch("http://localhost:3001/types")

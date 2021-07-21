@@ -1,16 +1,10 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fillTypes, getDetails, fillAll } from "../actions";
+import { useDispatch,  } from "react-redux";
+import { getDetails,  } from "../actions";
 import { Link } from "react-router-dom";
 import "./styles/home.css";
 import {
-  STAT_NAMES,
-  DEFAUL_IMG,
-  ORIGIN_NAMES,
-  SORT_NAMES,
-  PageNav,
   Filter,
-  Select,
   Sort,
   PagesPokemons,
 } from "./index";
@@ -18,8 +12,6 @@ import {
 export default function Home() {
   const [name, setName] = useState("");
   const dispatch = useDispatch();
-
-  //if (typeNames.length <= 1) dispatch(fillTypes());
 
   function handleName(event) {
     let { value } = event.target;

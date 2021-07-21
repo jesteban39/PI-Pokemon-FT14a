@@ -1,10 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useState, useEffect } from "react";
 import { PageNav } from "./index";
-import Pagination from "react-paginate";
 import "./styles/pages.css";
 import {
-  udatePages,
   fillTypes,
   getDetails,
   fillAll,
@@ -60,13 +57,7 @@ export default function Pagespages() {
             </div>
           </div>
         ))}
-      </section>
-      {/* <Pagination
-      containerClassName="nav"
-        pageCount={pages.length}
-        onPageChange={}
-        
-      /> */}
+      </section>      
       <PageNav
         totalPages={pages.length}
         value={currentPage}

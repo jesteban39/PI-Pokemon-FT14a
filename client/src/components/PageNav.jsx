@@ -1,6 +1,6 @@
 import "./styles/nav.css";
 
-export default function (props) {
+export default function PageNav(props) {
   const { totalPages, value, onChange } = props;
   return (
     <nav className="nav">

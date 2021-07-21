@@ -1,17 +1,8 @@
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./styles/select.css";
-import {
-  STAT_NAMES,
-  DEFAUL_IMG,
-  ORIGIN_NAMES,
-  SORT_NAMES,
-  PageNav,
-  Select,
-  PagesPokemons,
-} from "./index";
+import { ORIGIN_NAMES, Select } from "./index";
 
-export default function () {
+export default function Filter() {
   const dispatch = useDispatch();
   const input = useSelector((state) => state.filter);
   const typeNames = [
@@ -21,8 +12,6 @@ export default function () {
 
   function handleInput(event) {
     const { name, value } = event.target;
-    //console.log("even: ",name, value);
-    //setInput((state) => ({...state, [name]: value}));
     dispatch({
       type: "FILTER",
       payload: { ...input, [name]: value },

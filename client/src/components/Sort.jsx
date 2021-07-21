@@ -1,17 +1,8 @@
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./styles/select.css";
-import {
-  STAT_NAMES,
-  DEFAUL_IMG,
-  ORIGIN_NAMES,
-  SORT_NAMES,
-  PageNav,
-  Select,
-  PagesPokemons,
-} from "./index";
+import { STAT_NAMES, Select } from "./index";
 
-export default function () {
+export default function Sort() {
   const dispatch = useDispatch();
   const input = useSelector((state) => state.sort);
 

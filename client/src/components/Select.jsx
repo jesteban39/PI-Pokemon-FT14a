@@ -1,7 +1,5 @@
 export default function Select(props) {
-  const { name, options, title, onChange,cn } = props;
-  //word[0].toUpperCase() + word.slice(1);
-  //
+  const { name, options, title, onChange, cn } = props;
   return (
     <div className={cn}>
       <label>{title}</label>
