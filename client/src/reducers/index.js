@@ -1,12 +1,9 @@
 import {
   UPDATE,
   UPDATE_PAGES,
-  FILL_ALL,
   FILL_NEXT,
-  ADD_PAGE,
   GET_DETAILS,
   FILL_TYPES,
-  URL,
 } from "../actions";
 export const POKEMON_PENDING = {
   id: 0,
@@ -49,9 +46,6 @@ export const initialState = {
   pokemonDetails: POKEMON_PENDING,
   filter: { type: "all", origin: "all" },
   sort: { yardstick: "number", sequence: "ascendant" },
-  next: URL,
-  free: true,
-  total: 0,
 };
 
 /**
@@ -77,11 +71,7 @@ export default function rootReducer(state = initialState, action) {
         ...state,
         pokemons: [...state.pokemons, ...action.payload],
       };
-    case FILL_ALL:
-      return {
-        ...state,
-        pokemons: action.payload,
-      };
+
     case "SORT":
       return {
         ...state,
@@ -89,13 +79,11 @@ export default function rootReducer(state = initialState, action) {
         pokemon: state.pokemons.sort(compare(action.payload)),
       };
     case "FILTER":
-      //console.log("filter state: ",action.payload)
       return { ...state, currentPage: 1, filter: action.payload };
 
     case UPDATE_PAGES:
       if (state.pokemons.length > 0) {
         const { type, origin } = state.filter;
-        //console.log("filter: ",type, origin)
         let pages = [[]];
         let name;
         let min = 0;
@@ -104,7 +92,6 @@ export default function rootReducer(state = initialState, action) {
         let count = 0;
         if (origin === "creations") min = 3000;
         else if (origin === "existing") max = 1000;
-        //console.log("origin: ",min, max)
         for (let idx = 0; idx < state.pokemons.length; idx++) {
           const pokemon = state.pokemons[idx];
           if (count && count % PAGE_LIMIT === 0) {
@@ -122,17 +109,9 @@ export default function rootReducer(state = initialState, action) {
             pages[countPges].push(pokemon);
             count++;
           }
-          //console.log("pokemon: ",state.pokemons[idx]);
-          //console.log("idx: ",idx);
-          //console.log("state pages: ", pages);
         }
         return { ...state, pages };
       } else return state;
-    case ADD_PAGE:
-      return {
-        ...state,
-        pokemons: [...state.pokemons, ...action.payload],
-      };
     case GET_DETAILS:
       if (!action.payload) return state;
       return { ...state, pokemonDetails: action.payload };

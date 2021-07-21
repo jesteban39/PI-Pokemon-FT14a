@@ -1,13 +1,9 @@
 import { useState } from "react";
-import { useDispatch,  } from "react-redux";
-import { getDetails,  } from "../actions";
+import { useDispatch } from "react-redux";
+import { getDetails } from "../actions";
 import { Link } from "react-router-dom";
 import "./styles/home.css";
-import {
-  Filter,
-  Sort,
-  PagesPokemons,
-} from "./index";
+import { Filter, Sort, PagesPokemons } from "./index";
 
 export default function Home() {
   const [name, setName] = useState("");
@@ -26,7 +22,7 @@ export default function Home() {
   return (
     <div className="home">
       <section className="home-menu">
-        <form >
+        <form>
           <input
             placeholder="Pokemon Name"
             onChange={handleName}

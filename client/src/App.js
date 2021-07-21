@@ -1,4 +1,7 @@
-import { Route,  BrowserRouter } from "react-router-dom";
+import { Route, BrowserRouter } from "react-router-dom";
+import { fillTypes, fillAll } from "./actions";
+import { useDispatch } from "react-redux";
+
 import {
   LandingPage,
   Home,
@@ -7,12 +10,10 @@ import {
 } from "./components";
 import "./App.css";
 
-let state = null;
-export function getState() {
-  return state;
-}
-
 export default function App() {
+  const dispatch = useDispatch();
+  dispatch(fillAll());
+  dispatch(fillTypes());
   return (
     <BrowserRouter>
       <div className="App">

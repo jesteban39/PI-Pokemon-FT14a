@@ -1,36 +1,30 @@
-import { UPDATE, UPDATE_PAGES, FILL_NEXT } from "./index";
+import { UPDATE_PAGES, FILL_NEXT } from "./index";
 
-export default function fillAll(state) {
+let next = "http://localhost:3001/pokemons";
+let open = true;
+let total = 0;
+let count = 0;
+
+export default function fillAll() {
   return function (dispatch) {
-    const { free, total, next, pokemons } = state;
-    if (free && next && (total === 0 || pokemons.length < total)) {
-      dispatch({
-        type: UPDATE,
-        payload: { next, total, free: false },
-      });
+    if (open && next && (total === 0 || count < total)) {
+      open = false;
       return fetch(next)
-        .then((response) => {
-          if (response && response.ok) return response.json();
-          else throw new Error(`failed ${next} fetch`);
-        })
+        .then((response) => response.json())
         .then((json) => {
+          if (!json.data) throw Error("data is not");
+          total = json.count;
+          next = json.next;
+          count += json.data.length;
           dispatch({ type: FILL_NEXT, payload: json.data });
-          dispatch({
-            type: UPDATE,
-            payload: {
-              next: json.next,
-              total: json.count,
-              free: true,
-            },
-          });
           dispatch({ type: UPDATE_PAGES });
         })
         .catch((error) => {
-          dispatch({
-            type: UPDATE,
-            payload: { next, total, free: false },
-          });
           console.error(error);
+        })
+        .finally(() => {
+          open = true;
+          dispatch(fillAll());
         });
     }
   };

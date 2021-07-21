@@ -1,5 +1,3 @@
-import { getState } from "../App";
-
 import sentNewPokemon from "./sentNewPokemon";
 import getDetails from "./getDetails";
 import udatePages from "./udatePages";
@@ -14,13 +12,11 @@ export const GET_DETAILS = "GET_DETAILS";
 export const FILL_TYPES = "FILL_TYPES";
 export const FILL_NEXT = "FILL_NEXT";
 export const FILL_ALL = "FILL_ALL";
-export const ADD_PAGE = "ADD_PAGE";
 export const UPDATE = "UPDATE";
 export const RESET = "RESET";
 
 export {
   udatePages,
-  getState,
   fillAll,
   fillNext,
   getDetails,

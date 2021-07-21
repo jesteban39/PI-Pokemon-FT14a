@@ -1,4 +1,4 @@
-import { URL,UPDATE_PAGES,FILL_NEXT } from "./index";
+import { URL, UPDATE_PAGES, FILL_NEXT } from "./index";
 
 export default function sentNewPokemon(newPokemon) {
   return function (dispatch) {

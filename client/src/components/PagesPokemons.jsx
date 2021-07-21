@@ -1,18 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import { PageNav } from "./index";
 import "./styles/pages.css";
-import {
-  fillTypes,
-  getDetails,
-  fillAll,
-} from "../actions";
+import { getDetails } from "../actions";
 import { Link } from "react-router-dom";
 
 export default function Pagespages() {
-  const state = useSelector((state) => state);
   const dispatch = useDispatch();
-  dispatch(fillAll(state));
-  dispatch(fillTypes(state));
   const { pages, currentPage } = useSelector((state) => state);
 
   function handleDetail(event) {
@@ -21,7 +14,7 @@ export default function Pagespages() {
   }
 
   function handlePage(event) {
-    dispatch({ type: "CURRETN_PAGE", payload: event});
+    dispatch({ type: "CURRETN_PAGE", payload: event });
   }
 
   return (
@@ -43,7 +36,10 @@ export default function Pagespages() {
 
             <div className="pokemon-info">
               <div className="name-id">
-                <h4 className="name">{`${pokemon.name.replace("-"," ")}`}</h4>
+                <h4 className="name">{`${pokemon.name.replace(
+                  "-",
+                  " "
+                )}`}</h4>
                 <h5 className="id">{`No. ${pokemon.id}`}</h5>
               </div>
               <div className="types">
@@ -57,7 +53,7 @@ export default function Pagespages() {
             </div>
           </div>
         ))}
-      </section>      
+      </section>
       <PageNav
         totalPages={pages.length}
         value={currentPage}
