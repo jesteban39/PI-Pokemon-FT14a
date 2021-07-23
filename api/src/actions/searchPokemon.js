@@ -11,7 +11,7 @@ const TOTAL = 40;
  */
 module.exports = searchPokemon = (payload) => {
   let id = parseInt(payload);
-  if (id && id > 0 && id <= TOTAL) {
+  if (id && id > 0 && id <= 898) {
     return searchInApi(id).then((pokemon) => pokemon);
   }
   if (id && id > 3000 && id < 4000) {
@@ -29,7 +29,7 @@ module.exports = searchPokemon = (payload) => {
       (pokemon) => pokemon,
       () => {
         return searchInApi(name).then((pokemon) => {
-          if (!pokemon || pokemon.id > TOTAL) throw Error("out of range TOTAL");
+          if (!pokemon || pokemon.id > 898) throw Error("out of range TOTAL");
           return pokemon;
         });
       }

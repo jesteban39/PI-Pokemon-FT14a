@@ -16,7 +16,8 @@ export default function Home() {
   }
 
   function handleSearch(event) {
-    dispatch(getDetails(name));
+    if (name.length > 3) dispatch(getDetails(name));
+    else event.preventDefault();
   }
 
   return (

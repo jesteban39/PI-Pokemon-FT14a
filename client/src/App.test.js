@@ -1,6 +1,5 @@
-import { render, screen } from "@testing-library/react";
 import { LandingPage } from "./components";
-import { configure, shallow, mount } from "enzyme";
+import { shallow } from "enzyme";
 
 import "@testing-library/jest-dom";
 
@@ -9,17 +8,17 @@ describe("componente <LandingPage />", () => {
   beforeEach(() => {
     wrapper = shallow(<LandingPage />);
   });
-  test("debería mostrar <LandingPage /> correctamente ", () => {
+  test("should show <LandingPage /> correctly ", () => {
     expect(wrapper).toMatchSnapshot();
   });
-  test("debería mostrar un elemento button con el texto To List Pokemons", () => {
+  test("should show a button element with the text To List Pokemons", () => {
     const wrapper = shallow(<LandingPage />);
     const counterText = wrapper.find("button").text().trim();
     expect(counterText).toBe("To List Pokemons");
   });
-  test("debería mostrar un parrafo de bienvenida", () => {
+  test("should show a welcome paragraph", () => {
     const wrapper = shallow(<LandingPage />);
     const counterText = wrapper.find("p").text().trim();
-    expect(/Welcome/i.test(counterText)).toBe.true
+    expect(/Welcome/i.test(counterText)).toBe.true;
   });
 });

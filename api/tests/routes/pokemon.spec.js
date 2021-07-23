@@ -43,7 +43,7 @@ describe("Pokemon routes", () => {
       });
     });
 
-    it("respond for first pokemon to pokeapi", () =>
+    xit("respond for first pokemon to pokeapi", () =>
       agent.get("/pokemons").then((res) => {
         expect(res.body.data[0]).to.be.deep.equal(pokemon1);
       }));
@@ -51,7 +51,7 @@ describe("Pokemon routes", () => {
       agent.get("/pokemons").then((res) => {
         expect(res.body.data.length).to.be.equal(12);
       }));
-    it("respond for data to pokeapi", (done) =>
+    xit("respond for data to pokeapi", (done) =>
       agent.get("/pokemons").then((res) => {
         done();
         expect(res.body.data[0].name).to.be.equal("bulbasaur");

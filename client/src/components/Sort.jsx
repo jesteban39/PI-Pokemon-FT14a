@@ -28,7 +28,7 @@ export default function Sort() {
       <Select
         cn="select"
         name="yardstick"
-        options={["number", "name", ...STAT_NAMES]}
+        options={["number", "name", "force"]}
         onChange={handleInput}
       />
     </div>

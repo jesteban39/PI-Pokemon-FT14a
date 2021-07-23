@@ -24,7 +24,11 @@ export default function PokemonDetails(props) {
             <label>{` Weight: ${pokemon.weight / 10} kg`}</label>
             <div className="container-types">
               <label className="types">{` Types: `}</label>
-              <div></div>
+              <div>
+                {pokemon.types.map((type) => (
+                  <label key={type}>{type}</label>
+                ))}
+              </div>
             </div>
           </div>
 

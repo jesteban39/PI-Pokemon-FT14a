@@ -54,11 +54,13 @@ export default function Pagespages() {
           </div>
         ))}
       </section>
-      <PageNav
-        totalPages={pages.length}
-        value={currentPage}
-        onChange={handlePage}
-      />
+      {pages[0].length > 0 && (
+        <PageNav
+          totalPages={pages.length}
+          value={currentPage}
+          onChange={handlePage}
+        />
+      )}
     </div>
   );
 }

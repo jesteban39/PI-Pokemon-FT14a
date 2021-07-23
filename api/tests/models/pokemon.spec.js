@@ -1,13 +1,13 @@
 const { Pokemon,  conn } = require("../../src/db.js");
 const { expect } = require("chai");
 
-xdescribe("Pokemon model", () => {
+describe("Pokemon model", () => {
   before(() =>
     conn.authenticate().catch((err) => {
       console.error("Unable to connect to the database:", err);
     })
   );
-  xdescribe("Validators", () => {
+  describe("Validators", () => {
     beforeEach(() => Pokemon.sync({ force: true }));
     afterEach(() => Pokemon.sync({ force: true }));
     describe("name", () => {
@@ -43,7 +43,7 @@ xdescribe("Pokemon model", () => {
         });
       });
     });
-    xdescribe("other columns", () => {
+    describe("other columns", () => {
       xit("add a default image", () => {
         Pokemon.create({ name: "poke img" }).then((pokemon) => {
           expect(pokemon.img).to.not.null();
