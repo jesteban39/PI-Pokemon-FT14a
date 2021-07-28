@@ -8,7 +8,7 @@ const {
 } = require("../actions");
 
 const TOTAL = 40;
-const ROUTE = "http://localhost:3001/pokemons";
+const ROUTE = "http://191.89.96.186:80/"+"pokemons";
 const router = Router();
 
 module.exports = router;

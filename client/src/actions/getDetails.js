@@ -6,7 +6,7 @@ export default function getDetails(id) {
   return function (dispatch) {
     if (open) {
       open = false;
-      return fetch(URL + `/${id}`)
+      return fetch(URL + `pokemons/${id}`)
         .then((response) => {
           return response.json();
         })

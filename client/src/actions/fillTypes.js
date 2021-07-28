@@ -1,11 +1,12 @@
-import { FILL_TYPES } from "./index";
+import { URL, FILL_TYPES } from "./index";
 let open = true;
 let total = 0;
 export default function fillTypes() {
   return function (dispatch) {
     if (open && total === 0) {
       open = false;
-      return fetch("http://localhost:3001/types")
+      console.log("dis");
+      return fetch(URL + "types")
         .then((res) => res.json())
         .then((json) => {
           if (!json.data) throw Error("data is not");
@@ -14,6 +15,10 @@ export default function fillTypes() {
         })
         .catch((err) => {
           console.error(err);
+          dispatch({
+            type: FILL_TYPES,
+            payload: ["there are no types"],
+          });
         })
         .finally(() => {
           open = true;

@@ -1,12 +1,13 @@
-import { UPDATE_PAGES, FILL_NEXT } from "./index";
+import { URL, UPDATE_PAGES, FILL_NEXT } from "./index";
 
-let next = "http://localhost:3001/pokemons";
+let next = "URL";
 let open = true;
 let total = 0;
 let count = 0;
 
 export default function fillAll() {
   return function (dispatch) {
+    if (next === "URL") next = URL + "pokemons";
     if (open && next && (total === 0 || count < total)) {
       open = false;
       return fetch(next)

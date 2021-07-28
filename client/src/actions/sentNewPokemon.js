@@ -2,7 +2,7 @@ import { URL, UPDATE_PAGES, FILL_NEXT } from "./index";
 
 export default function sentNewPokemon(newPokemon) {
   return function (dispatch) {
-    return fetch(URL, {
+    return fetch(URL + "pokemons", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

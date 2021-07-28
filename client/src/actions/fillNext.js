@@ -3,7 +3,7 @@ let cont = 0;
 export default function fillNext(next) {
   return function (dispatch) {
     if (next)
-      return fetch(`${URL}?from=${++cont}&limit=1`)
+      return fetch(`${URL}pokemons?from=${++cont}&limit=1`)
         .then((response) => {
           if (response.ok) return response.json();
           else throw new Error(`fetch ${next} failed`);
